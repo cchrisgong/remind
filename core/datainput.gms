@@ -1465,6 +1465,31 @@ $offdelim
 *** cm_GDPscen will be used for Transport (EDGE-T) (see p29_trpdemand)
 pm_fedemand(tall,all_regi,in) = f_fedemand(tall,all_regi,"%cm_demScen%",in);
 
+pm_fedemand_steelcha("2020") = 0.981;
+pm_fedemand_steelcha("2025") = 0.90;
+pm_fedemand_steelcha("2030") = 0.85;
+pm_fedemand_steelcha("2035") = 0.8;
+pm_fedemand_steelcha("2040") = 0.7;
+pm_fedemand_steelcha("2045") = 0.6;
+pm_fedemand_steelcha("2050") = 0.5;
+pm_fedemand_steelcha("2055") = 0.5;
+pm_fedemand_steelcha(tall)$(tall.val gt 2055) = 0.5;
+
+pm_fedemand_scraprate_cha("2020") = 0.15;
+pm_fedemand_scraprate_cha("2025") = 0.37;
+pm_fedemand_scraprate_cha("2030") = 0.5;
+pm_fedemand_scraprate_cha("2035") = 0.6;
+pm_fedemand_scraprate_cha("2040") = 0.7;
+pm_fedemand_scraprate_cha("2045") = 0.7;
+pm_fedemand_scraprate_cha("2050") = 0.7;
+pm_fedemand_scraprate_cha("2055") = 0.7;
+pm_fedemand_scraprate_cha(tall)$(tall.val gt 2055) = 0.7;
+
+pm_fedemand(tall,"CHA","ue_steel_primary") = pm_fedemand_steelcha(tall) * (1- pm_fedemand_scraprate_cha(tall));
+pm_fedemand(tall,"CHA","ue_steel_secondary")= pm_fedemand_steelcha(tall) * pm_fedemand_scraprate_cha(tall);
+
+pm_fedemand("2025","CHA","ue_steel_secondary") = 0.338; !! source: CMIPR
+pm_fedemand("2025","CHA","ue_steel_primary") = pm_fedemand_steelcha("2025") - pm_fedemand("2025","CHA","ue_steel_secondary");
 
 $ifthen.subsectors "%industry%" == "subsectors"   !! industry
 *** Limit secondary steel production to 90 %.  This might be slightly off due
@@ -1504,6 +1529,8 @@ if (9 lt smax((t,regi)$(
   logfile.nd = 3;
   putclose logfile;
 );
+
+
 $endif.subsectors
 
 *** initialize global target deviation scalar

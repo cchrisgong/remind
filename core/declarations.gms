@@ -198,6 +198,9 @@ pm_calibrate_eff_scale(all_in,all_in,eff_scale_par)   "parameters for scaling ef
 /   /
 
 pm_fedemand(tall,all_regi,all_in)                     "final energy demand"
+pm_fedemand_steelcha(tall)                            "steel output for CHA"
+pm_fedemand_scraprate_cha(tall)                       "steel scrap rate for CHA"
+
 pm_share_CCS_CCO2(ttot,all_regi)                      "share of stored CO2 from total captured CO2"
 
 pm_delta_histCap(tall,all_regi,all_te)                "parameter to store data of historic capacity additions [TW/yr]"
