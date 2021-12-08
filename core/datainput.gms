@@ -497,7 +497,11 @@ pm_cf(ttot,regi,"ngt")$(ttot.val eq 2035) = 0.7 * pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"ngt")$(ttot.val eq 2040) = 0.5 * pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"ngt")$(ttot.val ge 2045) = 0.4 * pm_cf(ttot,regi,"ngt");
 
-
+*CG* phasing down pc cf to "peak load" cf for CHA
+pm_cf(ttot,"CHA","pc")$(ttot.val eq 2030) = 0.8 * pm_cf(ttot,regi,"pc");
+pm_cf(ttot,"CHA","pc")$(ttot.val eq 2035) = 0.7 * pm_cf(ttot,regi,"pc");
+pm_cf(ttot,"CHA","pc")$(ttot.val eq 2040) = 0.5 * pm_cf(ttot,regi,"pc");
+pm_cf(ttot,"CHA","pc")$(ttot.val ge 2045) = 0.4 * pm_cf(ttot,regi,"pc");
 
 *** FS: set CF of additional t&d H2 for buildings and industry to t&d H2 stationary value
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
