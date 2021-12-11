@@ -498,10 +498,13 @@ pm_cf(ttot,regi,"ngt")$(ttot.val eq 2040) = 0.5 * pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"ngt")$(ttot.val ge 2045) = 0.4 * pm_cf(ttot,regi,"ngt");
 
 *CG* phasing down pc cf to "peak load" cf for CHA
+$ifthen.Policy %carbonprice% == "diffCurvPhaseIn2Lin"
 pm_cf(ttot,"CHA","pc")$(ttot.val eq 2030) = 0.8 * pm_cf(ttot,"CHA","pc");
 pm_cf(ttot,"CHA","pc")$(ttot.val eq 2035) = 0.7 * pm_cf(ttot,"CHA","pc");
 pm_cf(ttot,"CHA","pc")$(ttot.val eq 2040) = 0.5 * pm_cf(ttot,"CHA","pc");
 pm_cf(ttot,"CHA","pc")$(ttot.val ge 2045) = 0.4 * pm_cf(ttot,"CHA","pc");
+$endif.Policy
+
 
 *** FS: set CF of additional t&d H2 for buildings and industry to t&d H2 stationary value
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
@@ -531,6 +534,17 @@ $endif.Base_techpol
 $endif.Base_Cprice
 
 display pm_regiEarlyRetiRate;
+
+*CG* CHA-specific pc rate
+$ifthen.Policy %carbonprice% == "diffCurvPhaseIn2Lin"
+*** Allow first slow then fast phase-out cap
+pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val le 2025) = 0.03;
+pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val eq 2030) = 0.04;
+pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val eq 2035) = 0.06;
+pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val eq 2040) = 0.09;
+pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val ge 2045) = 0.15;
+$endif.Base_Cprice
+
 
 
 ***---------------------------------------------------------------------------
