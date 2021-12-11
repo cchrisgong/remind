@@ -543,7 +543,7 @@ pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val eq 2030) = 0.04;
 pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val eq 2035) = 0.06;
 pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val eq 2040) = 0.09;
 pm_regiEarlyRetiRate(t,"CHA","pc")$(t.val ge 2045) = 0.15;
-$endif.Base_Cprice
+$endif.Policy
 
 
 
