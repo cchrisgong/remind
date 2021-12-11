@@ -504,11 +504,30 @@ pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
 pm_cf(ttot,regi,"tdh2i") = pm_cf(ttot,regi,"tdh2s");
 
 
-table pm_earlyreti_adjRate(all_regi,all_te)  "extra retirement rate for technologies in countries with relatively old fleet"
-$ondelim
-$include "./core/input/p_earlyRetirementAdjFactor.cs3r"
-$offdelim
-;
+*SB* Region- and tech-specific early retirement rates
+*Regional*
+loop(ext_regi$pm_extRegiEarlyRetiRate(ext_regi), 
+  pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and t.val ge 2020) = pm_extRegiEarlyRetiRate(ext_regi);
+);
+*Tech-specific*
+loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te), 
+  pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and t.val ge 2020) = p_techEarlyRetiRate(ext_regi,te);
+
+*  pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and not sameas(ext_regi,"EUR_regi") and t.val ge 2035 and p_techEarlyRetiRate(ext_regi,te) gt p_techEarlyRetiRate("GLO",te)) = p_techEarlyRetiRate("GLO",te);
+
+);
+
+
+*SB* Time-dependent early retirement rates in Baseline scenarios
+$ifthen.Base_Cprice %carbonprice% == "none"
+$ifthen.Base_techpol %techpol% == "none"
+*** Allow very little early retirement future periods
+pm_regiEarlyRetiRate(t,regi,"pc")$(t.val gt 2025) = 0.01;
+$endif.Base_techpol
+$endif.Base_Cprice
+
+display pm_regiEarlyRetiRate;
+
 
 ***---------------------------------------------------------------------------
 *RP* calculate omegs and opTimeYr2te
