@@ -197,6 +197,19 @@ $offdelim
 ;
 p29_capitalQuantity(t,regi,ppfKap) = f29_capitalQuantity(t,regi,"%cm_GDPscen%",ppfKap);
 
+*** fix industry energy efficiency capital for mrremind rounding
+loop ((ttot,regi,ppfKap_industry_dyn37(in))$( 
+                                          t(ttot) AND ord(ttot) lt card(ttot) ),
+  p29_capitalQuantity(ttot+1,regi,in)
+  = min(p29_capitalQuantity(ttot,regi,in),
+        ( p29_capitalQuantity(ttot,regi,in)
+        * ( (1 - pm_delta_kap(regi,in)) 
+	 ** (pm_ttot_val(ttot+1) - pm_ttot_val(ttot))
+	  )
+	)
+    );
+);
+
 *** ---- PRELIMINARY ALTERNATIVE FE TRAJECTORIES FOR INDUSTRY ----------------START----------
 ** Alternative ("handmade") FE trajectory
 display pm_fedemand;
@@ -207,7 +220,6 @@ Parameter
 p29_fedemand_alt       "alt final energy demand"
 /
 $ondelim
-$if "%cm_calibration_FE%" == "low" $include "./modules/29_CES_parameters/calibrate/input/pm_fe_demand_low.cs4r"
 $if "%cm_calibration_FE%" == "medium" $include "./modules/29_CES_parameters/calibrate/input/pm_fe_demand_medium.cs4r"
 $offdelim
 /

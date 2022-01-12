@@ -517,12 +517,12 @@ loop(ext_regi$pm_extRegiEarlyRetiRate(ext_regi),
   pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and t.val ge 2020) = pm_extRegiEarlyRetiRate(ext_regi);
 );
 *Tech-specific*
+$IFTHEN.tech_earlyreti not "%c_tech_earlyreti_rate%" == "off"
 loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te), 
-  pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and t.val ge 2020) = p_techEarlyRetiRate(ext_regi,te);
-
-*  pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and not sameas(ext_regi,"EUR_regi") and t.val ge 2035 and p_techEarlyRetiRate(ext_regi,te) gt p_techEarlyRetiRate("GLO",te)) = p_techEarlyRetiRate("GLO",te);
-
+  pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and (t.val lt 2035 or sameas(ext_regi,"GLO"))) = p_techEarlyRetiRate(ext_regi,te);
 );
+$ENDIF.tech_earlyreti
+
 
 
 *SB* Time-dependent early retirement rates in Baseline scenarios
