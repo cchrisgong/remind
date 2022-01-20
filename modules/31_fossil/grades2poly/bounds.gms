@@ -46,4 +46,9 @@ if(cm_limit_peur_scen eq 1,
  v31_fuExtrCum.up(ttot,regi,"peur", "1") = p31_fuExtrCumMaxBound(regi,"peur", "1");
 );
 
+*if(cm_cha_limit_gas eq 1,
+ v31_fuExtrCum.up(ttot,"CHA","pegas", "1") = 3.6;
+ v31_fuExtrCum.up(ttot,"CHA","pegas", "2") = 1.5;
+ v31_fuExtrCum.up(ttot,"CHA","pegas", "3") = 2.5;
+*);
 *** EOF ./modules/31_fossil/grades2poly/bounds.gms
