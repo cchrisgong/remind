@@ -113,8 +113,9 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
   errorsfound <- sum(toolong) + sum(regionname) + sum(nameisNA) + sum(illegalchars) + whitespaceErrors + copyConfigFromErrors + pathgdxerrors
 
   # check column names
-  knownColumnNames <- c(names(cfg$gms), setdiff(names(cfg), "gms"), names(path_gdx_list),
-                        "start", "model", "copyConfigFrom")
+  knownColumnNames <- c(names(cfg$gms), names(path_gdx_list), "start", "output", "description", "model", "action",
+                        "extramappings_historic", "inputRevision", "slurmConfig", "slurmConfigCalibIter",
+                        "regionmapping", "results_folder", "force_replace", "pythonEnabled", "copyConfigFrom")
   if (grepl("scenario_config_coupled", filename)) {
     knownColumnNames <- c(knownColumnNames, "cm_nash_autoconverge_lastrun", "oldrun", "path_report", "magpie_scen",
                           "no_ghgprices_land_until", "qos", "sbatch", "path_mif_ghgprice_land", "max_iterations",

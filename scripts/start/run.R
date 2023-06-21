@@ -54,8 +54,15 @@ run <- function() {
       # Update calibration iteration in GAMS file
       Sys.setenv(cm_CES_calibration_iteration = cal_itr)
 
-      system(paste0(cfg$gamsv, " full.gms -errmsg=1 -a=", cfg$action,
-                    " -ps=0 -pw=185 -pc=2 -gdxcompress=1 -holdFixedAsync=1 -logoption=", cfg$logoption))
+      gamscode <- paste0(cfg$gamsv, " full.gms -errmsg=1 -a=", cfg$action,
+                  " -ps=0 -pw=185 -pc=2 -gdxcompress=1 -holdFixedAsync=1 -logoption=", cfg$logoption)
+
+      if (is.null(cfg$slurmConfigCalibIter) || isFALSE(cfg$slurmConfigCalibIter)) {
+        system(gamscode)
+      } else {
+        system(paste0("sbatch --wait ", cfg$slurmConfigCalibIter, " --job-name=", cfg$title, "_cal", cal_itr,
+               " --output=log.txt --open-mode=append --mail-type=FAIL --comment=REMIND --wrap='", gamscode, "'"))
+      }
 
       # If GAMS found a solution
       if (   file.exists("fulldata.gdx")
