@@ -17,7 +17,8 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
 
     # Edit main model file, region settings and input data revision based on scenarios table, if cell non-empty
     for (switchname in intersect(c("model", "regionmapping", "extramappings_historic", "action",
-                                   "inputRevision", "slurmConfig", "results_folder", "force_replace", "pythonEnabled"),
+                                   "inputRevision", "slurmConfig", "results_folder", "force_replace", "pythonEnabled",
+                                   "slurmConfigCalibIter"),
                                  names(iscenarios))) {
       if ( ! is.na(iscenarios[iscen, switchname] )) {
         icfg[[switchname]] <- iscenarios[iscen, switchname]
@@ -30,6 +31,13 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
       if(! exists("slurmConfig")) slurmConfig <- choose_slurmConfig()
       icfg$slurmConfig <- slurmConfig
     }
+    if (icfg$slurmConfigCalibIter %in% paste(seq(1:16))) {
+      icfg$slurmConfigCalibIter <- choose_slurmConfig(identifier = icfg$slurmConfigCalibIter)
+    }
+    if (icfg$slurmConfigCalibIter %in% c(NA, "")) {
+      icfg$slurmConfigCalibIter <- FALSE
+    }
+
 
     # Set description
     if ("description" %in% names(iscenarios) && ! is.na(iscenarios[iscen, "description"])) {
