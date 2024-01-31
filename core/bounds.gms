@@ -178,6 +178,8 @@ if (cm_startyear le 2015,
   );
 );
 
+if (cm_nucscen ne 6,
+
 if (cm_startyear le 2020,   !! require the realization of at least 70% of the plants that are currently under construction and thus might be finished until 2020 - should be updated with real-world 2020 numbers
    vm_deltaCap.lo("2020",regi,"tnrs","1") = 0.70 * pm_NuclearConstraint("2020",regi,"tnrs") / 5;
    vm_deltaCap.up("2020",regi,"tnrs","1") = pm_NuclearConstraint("2020",regi,"tnrs") / 5;
@@ -187,6 +189,7 @@ if (cm_startyear le 2025,   !! upper bound calculated in mrremind/R/calcCapacity
 );
 if (cm_startyear le 2030,   !! upper bound calculated in mrremind/R/calcCapacityNuclear.R: 50% of planned and 70% of proposed plants, plus extra for lifetime extension and newcomers
    vm_deltaCap.up("2030",regi,"tnrs","1") = pm_NuclearConstraint("2030",regi,"tnrs") / 5;
+);
 );
 
 display p_CapFixFromRWfix, p_deltaCapFromRWfix;
