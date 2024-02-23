@@ -41,7 +41,7 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
 
     # Set description
     if ("description" %in% names(iscenarios) && ! is.na(iscenarios[iscen, "description"])) {
-      icfg$description <- gsub('"', '', iscenarios[iscen, "description"])
+      icfg$description <- iconv(gsub('"', '', iscenarios[iscen, "description"]), from = "UTF-8", to = "ASCII//TRANSLIT")
     } else {
       icfg$description <- paste0("REMIND run ", iscen, " started by ", config.file, ".")
     }
@@ -67,16 +67,16 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
     if (verboseGamsCompile) {
       # for columns path_gdx…, check whether the cell is non-empty, and not the title of another run with start = 1
       # if not a full path ending with .gdx provided, search for most recent folder with that title
-      if (any(iscen %in% iscenarios[iscen, names(path_gdx_list)])) {
+      if (any(iscen %in% iscenarios[iscen, setdiff(names(path_gdx_list), "path_gdx")])) {
         stop("Self-reference: ", iscen , " refers to itself in a path_gdx... column.")
       }
       # if a scenario is referenced that is not in the list of scenarios to be started, try to find a gdx automatically
       for (path_to_gdx in names(path_gdx_list)) {
-        if (!is.na(iscenarios[iscen, path_to_gdx]) & ! iscenarios[iscen, path_to_gdx] %in% row.names(iscenarios)) {
+        if (!is.na(iscenarios[iscen, path_to_gdx]) & ! iscenarios[iscen, path_to_gdx] %in% setdiff(row.names(iscenarios), iscen)) {
           if (! str_sub(iscenarios[iscen, path_to_gdx], -4, -1) == ".gdx") {
             # search for fulldata.gdx in output directories starting with the path_to_gdx cell content.
             # may include folders that only _start_ with this string. They are sorted out later.
-            dirfolders <- c("./output", icfg$modeltests_folder)
+            dirfolders <- unique(c(dirname(icfg$results_folder), "output", icfg$modeltests_folder))
             for (dirfolder in dirfolders) {
               dirs <- Sys.glob(file.path(dirfolder, paste0(iscenarios[iscen, path_to_gdx], "*/fulldata.gdx")))
               # if path_to_gdx cell content exactly matches folder name, use this one
@@ -104,15 +104,20 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
           }
           # if the above has not created a path to a valid gdx, stop
           if (!file.exists(iscenarios[iscen, path_to_gdx])) {
-            icfg$errorsfoundInConfigureCfg <- sum(icfg$errorsfoundInConfigureCfg, 1)
-            message(red, "Error", NC, ": Can't find a gdx specified as '", iscenarios[iscen, path_to_gdx], "' in column ",
-                    path_to_gdx, ".\nPlease specify full path to gdx or name of output subfolder that contains a ",
-                    "fulldata.gdx from a previous normally completed run.")
+            if (   path_to_gdx == "path_gdx"
+                && iscenarios[iscen, path_to_gdx] == iscen) {
+              iscenarios[iscen, path_to_gdx] <- NA
+            } else {
+              icfg$errorsfoundInConfigureCfg <- sum(icfg$errorsfoundInConfigureCfg, 1)
+              message(red, "Error", NC, ": Can't find a gdx specified as '", iscenarios[iscen, path_to_gdx], "' in column ",
+                      path_to_gdx, ".\nPlease specify full path to gdx or name of output subfolder that contains a ",
+                      "fulldata.gdx from a previous normally completed run.")
+            }
           }
         }
       }
     }
-    
+
     # Define path where the GDXs will be taken from
     gdxlist <- unlist(iscenarios[iscen, names(path_gdx_list)])
     names(gdxlist) <- path_gdx_list
@@ -123,6 +128,6 @@ configureCfg <- function(icfg, iscen, iscenarios, verboseGamsCompile = TRUE) {
     # add table with information about runs that need the fulldata.gdx of the current run as input
     icfg$RunsUsingTHISgdxAsInput <- iscenarios %>% select(contains("path_gdx")) %>%              # select columns that have "path_gdx" in their name
                                                    filter(rowSums(. == iscen, na.rm = TRUE) > 0) # select rows that have the current scenario in any column
-    
+
     return(icfg)
 }

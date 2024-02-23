@@ -15,7 +15,7 @@ OPTION decimals =5;
 display p21_deltarev;
 OPTION decimals =3;
 
-*** sum all 4 CO2eq tax components
+*** sum all 3 CO2eq tax components
 pm_taxCO2eqSum(ttot,regi) = pm_taxCO2eq(ttot,regi) + pm_taxCO2eqRegi(ttot,regi) + pm_taxCO2eqSCC(ttot,regi);
 
 *GL* save reference level value of taxes for revenue recycling
@@ -29,7 +29,7 @@ p21_taxrevCCS0(ttot,regi) = cm_frac_CCS * pm_data(regi,"omf","ccsinje") * pm_inc
                             * (1/pm_ccsinjecrate(regi)) * sum(teCCS2rlf(te,rlf), sum(ccs2te(ccsCO2(enty),enty2,te), vm_co2CCS.l(ttot,regi,enty,enty2,te,rlf) ) ) / pm_dataccs(regi,"quan","1");
 pm_taxrevNetNegEmi0(ttot,regi) = cm_frac_NetNegEmi * pm_taxCO2eqSum(ttot,regi) * v21_emiALLco2neg.l(ttot,regi);
 p21_taxrevFE0(ttot,regi) = sum((entyFe,sector)$entyFe2Sector(entyFe,sector),
-    ( pm_tau_fe_tax(ttot,regi,sector,entyFe) + pm_tau_fe_sub(ttot,regi,sector,entyFe) ) 
+    ( p21_tau_fe_tax(ttot,regi,sector,entyFe) + p21_tau_fe_sub(ttot,regi,sector,entyFe) ) 
     * 
     sum(emiMkt$sector2emiMkt(sector,emiMkt), 
       sum(se2fe(entySe,entyFe,te),   
@@ -53,7 +53,13 @@ p21_implicitDiscRate0(ttot,regi) = sum(ppfKap(in),  p21_implicitDiscRateMarg(tto
 p21_taxemiMkt0(ttot,regi,emiMkt) = pm_taxemiMkt(ttot,regi,emiMkt) * vm_co2eqMkt.l(ttot,regi,emiMkt);
 p21_taxrevFlex0(ttot,regi)   =  sum(en2en(enty,enty2,te)$(teFlexTax(te)),
                                         -vm_flexAdj.l(ttot,regi,te) * vm_demSe.l(ttot,regi,enty,enty2,te));
-p21_taxrevImport0(ttot,regi,tradePe) = p21_tau_Import(ttot,regi,tradePe) * pm_pvp(ttot,tradePe) / pm_pvp(ttot,"good") * vm_Mport.l(ttot,regi,tradePe);
+
+p21_taxrevImport0(ttot,regi,tradePe,tax_import_type_21) =  p21_tau_Import(ttot,regi,tradePe,tax_import_type_21)$sameas(tax_import_type_21, "worldPricemarkup") * pm_pvp(ttot,tradePe) / pm_pvp(ttot,"good") * vm_Mport.l(ttot,regi,tradePe)+
+  p21_tau_Import(ttot, regi, tradePe, tax_import_type_21)$sameas(tax_import_type_21, "CO2taxmarkup") * pm_taxCO2eqSum(ttot,regi) * pm_cintraw(tradePe) *  vm_Mport.l(ttot,regi,tradePe)+
+  p21_tau_Import(ttot, regi, tradePe, tax_import_type_21)$sameas(tax_import_type_21, "avCO2taxmarkup") * max(pm_taxCO2eqSum(ttot,regi), sum(regi2, pm_taxCO2eqSum(ttot,regi2))/(card(regi2))) * pm_cintraw(tradePe) *  vm_Mport.l(ttot,regi,tradePe);
+
+
+
 p21_taxrevChProdStartYear0(t,regi) = sum(en2en(enty,enty2,te), vm_changeProdStartyearCost.l(t,regi,te)$( (t.val gt 2005) AND (t.val eq cm_startyear ) ) );
 
 *** Save reference level of tax revenues for each iteration

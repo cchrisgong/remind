@@ -112,15 +112,7 @@ loop(regi,
           );
     );
 
-  if (cm_emiscen eq 9 or (cm_emiscen eq 10),
-*** TODO: take care, this means that the SCC are only priced into MAC-curve
-*** abatement if emiscen = 9 and for emiscen = 10 for CBA runs. Might want to change this.
-    p_priceCO2(ttot,regi) = (pm_taxCO2eq(ttot,regi) + pm_taxCO2eqRegi(ttot,regi) + pm_taxCO2eqSCC(ttot,regi) )* 1000;
-  else
-    p_priceCO2(ttot,regi) 
-    = abs(pm_pvpRegi(ttot,regi,"perm") / (pm_pvp(ttot,"good") + sm_eps))
-    * 1000;
-  );
+p_priceCO2(ttot,regi) = pm_taxCO2eqSum(ttot,regi) * 1000;
 
 *** Define co2 price for entities that are used in MAC. 
 loop((enty,enty2)$emiMac2mac(enty,enty2), !! make sure that both mac sectors and mac curves have prices asigned as both sets are used in calculations below
@@ -192,7 +184,7 @@ vm_macBase.fx(ttot,regi,"co2cement_process")$( ttot.val ge 2005 )
     )$(p_inv_gdx(ttot,regi) ne 0)
 ;
 
-vm_macBaseInd.fx(ttot,regi,"co2cement_process","cement")$( ttot.val ge 2005 )
+vm_emiIndBase.fx(ttot,regi,"co2cement_process","cement")$( ttot.val ge 2005 )
 = vm_macBase.lo(ttot,regi,"co2cement_process");
 
 * *** Reduction of cement demand due to CO2 price markups *** *
@@ -255,7 +247,7 @@ if ( NOT (cm_IndCCSscen eq 1 AND cm_CCS_cement eq 1),
   = vm_macBase.lo(ttot,regi,"co2cement_process")
   * pm_ResidualCementDemand(ttot,regi);
 
-  vm_macBaseInd.fx(ttot,regi,"co2cement_process","cement")$( ttot.val ge 2005 )
+  vm_emiIndBase.fx(ttot,regi,"co2cement_process","cement")$( ttot.val ge 2005 )
   = vm_macBase.lo(ttot,regi,"co2cement_process");
 );
 
@@ -443,32 +435,24 @@ $iftheni.CO2priceDependent_AdjCosts %c_CO2priceDependent_AdjCosts% == "on"
 loop(ttot$( (ttot.val > cm_startyear) AND (ttot.val > 2020) ),  !! only change values in the unfixed time steps of the current run, and not in the past
   loop(regi,
     if( pm_taxCO2eq(ttot-1,regi) le (40 * sm_DptCO2_2_TDpGtC) ,
-	  p_varyAdj_mult_adjSeedTe(ttot,regi) = 0.1;
-	  p_varyAdj_mult_adjCoeff(ttot,regi)  = 4;
+      p_varyAdj_mult_adjSeedTe(ttot,regi) = 0.1;
+      p_varyAdj_mult_adjCoeff(ttot,regi)  = 4;
     elseif ( ( pm_taxCO2eq(ttot-1,regi) gt (40 * sm_DptCO2_2_TDpGtC) ) AND ( pm_taxCO2eq(ttot-1,regi) le (80 * sm_DptCO2_2_TDpGtC) ) ) ,
       p_varyAdj_mult_adjSeedTe(ttot,regi) = 0.25;
-	  p_varyAdj_mult_adjCoeff(ttot,regi)  = 2.5;
+      p_varyAdj_mult_adjCoeff(ttot,regi)  = 2.5;
     elseif ( ( pm_taxCO2eq(ttot-1,regi) gt (80 * sm_DptCO2_2_TDpGtC) ) AND ( pm_taxCO2eq(ttot-1,regi) le (160 * sm_DptCO2_2_TDpGtC) ) ) ,
       p_varyAdj_mult_adjSeedTe(ttot,regi) = 0.5;
-	  p_varyAdj_mult_adjCoeff(ttot,regi)  = 1.5;
+      p_varyAdj_mult_adjCoeff(ttot,regi)  = 1.5;
     elseif ( ( pm_taxCO2eq(ttot-1,regi) gt (160 * sm_DptCO2_2_TDpGtC) ) AND ( pm_taxCO2eq(ttot-1,regi) le (320 * sm_DptCO2_2_TDpGtC) ) ) ,
       p_varyAdj_mult_adjSeedTe(ttot,regi) = 1;
-	  p_varyAdj_mult_adjCoeff(ttot,regi)  = 1;
+      p_varyAdj_mult_adjCoeff(ttot,regi)  = 1;
     elseif ( ( pm_taxCO2eq(ttot-1,regi) gt (320 * sm_DptCO2_2_TDpGtC) ) AND ( pm_taxCO2eq(ttot-1,regi) le (640 * sm_DptCO2_2_TDpGtC) ) ) ,
       p_varyAdj_mult_adjSeedTe(ttot,regi) = 2;
-	  p_varyAdj_mult_adjCoeff(ttot,regi)  = 0.5;
-	elseif ( pm_taxCO2eq(ttot-1,regi) gt (640 * sm_DptCO2_2_TDpGtC) ) ,
+      p_varyAdj_mult_adjCoeff(ttot,regi)  = 0.5;
+    elseif ( pm_taxCO2eq(ttot-1,regi) gt (640 * sm_DptCO2_2_TDpGtC) ) ,
       p_varyAdj_mult_adjSeedTe(ttot,regi) = 4;
-	  p_varyAdj_mult_adjCoeff(ttot,regi)  = 0.25;
+      p_varyAdj_mult_adjCoeff(ttot,regi)  = 0.25;
     );
-	p_adj_seed_te(ttot,regi,'apCarH2T')        = p_varyAdj_mult_adjSeedTe(ttot,regi) * p_adj_seed_te_Orig(ttot,regi,'apCarH2T');
-    p_adj_seed_te(ttot,regi,'apCarElT')        = p_varyAdj_mult_adjSeedTe(ttot,regi) * p_adj_seed_te_Orig(ttot,regi,'apCarElT');
-    p_adj_seed_te(ttot,regi,'apCarDiEffT')     = p_varyAdj_mult_adjSeedTe(ttot,regi) * p_adj_seed_te_Orig(ttot,regi,'apCarDiEffT');
-    p_adj_seed_te(ttot,regi,'apCarDiEffH2T')   = p_varyAdj_mult_adjSeedTe(ttot,regi) * p_adj_seed_te_Orig(ttot,regi,'apCarDiEffH2T');
-    p_adj_coeff(ttot,regi,'apCarH2T')         = p_varyAdj_mult_adjCoeff(ttot,regi) * p_adj_coeff_Orig(ttot,regi,'apCarH2T') ;
-    p_adj_coeff(ttot,regi,'apCarElT')         = p_varyAdj_mult_adjCoeff(ttot,regi) * p_adj_coeff_Orig(ttot,regi,'apCarElT') ;
-    p_adj_coeff(ttot,regi,'apCarDiEffT')      = p_varyAdj_mult_adjCoeff(ttot,regi) * p_adj_coeff_Orig(ttot,regi,'apCarDiEffT') ;
-    p_adj_coeff(ttot,regi,'apCarDiEffH2T')    = p_varyAdj_mult_adjCoeff(ttot,regi) * p_adj_coeff_Orig(ttot,regi,'apCarDiEffH2T') ;
   );
 );
 display p_adj_seed_te, p_adj_coeff, p_varyAdj_mult_adjSeedTe, p_varyAdj_mult_adjCoeff;

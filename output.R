@@ -45,8 +45,8 @@ helpText <- "
 #'   remind_dir=       path to remind or output folder(s) where runs can be found.
 #'                     Defaults to ./output but can also be used to specify multiple
 #'                     folders, comma-separated, such as remind_dir=.,../otherremind
-#'   slurmConfig=      use slurmConfig=direct, priority, short or standby to specify
-#'                     slurm selection. You may also pass complicated arguments such as
+#'   slurmConfig=      use slurmConfig=priority, short or standby to specify slurm
+#'                     selection. You may also pass complicated arguments such as
 #'                     slurmConfig='--qos=priority --mem=8000'
 "
 
@@ -67,6 +67,8 @@ library(lucode2)
 library(gms)
 require(stringr, quietly = TRUE)
 
+source("scripts/start/isSlurmAvailable.R")
+
 flags <- NULL
 ### Define arguments that can be read from command line
 if (!exists("source_include")) {
@@ -84,9 +86,13 @@ if ("--help" %in% flags) {
 choose_slurmConfig_output <- function(slurmExceptions = NULL) {
   slurm_options <- c("--qos=priority", "--qos=short", "--qos=standby",
                      "--qos=priority --mem=8000", "--qos=short --mem=8000",
-                     "--qos=standby --mem=8000", "--qos=priority --mem=32000", "direct")
+                     "--qos=standby --mem=8000", "--qos=priority --mem=32000")
+
+  if (!isSlurmAvailable())
+    return("direct")
+
   if (!is.null(slurmExceptions)) {
-    slurm_options <- unique(c(grep(slurmExceptions, slurm_options, value = TRUE), "direct"))
+    slurm_options <- grep(slurmExceptions, slurm_options, value = TRUE)
   }
   if (length(slurm_options) == 1) {
     return(slurm_options[[1]])
@@ -126,7 +132,12 @@ if (! exists("outputdir")) {
   modulesNeedingMif <- c("compareScenarios2", "xlsx_IIASA", "policyCosts", "Ariadne_output",
                          "plot_compare_iterations", "varListHtml", "fixOnRef")
   needingMif <- any(modulesNeedingMif %in% output)
-  dir_folder <- if (exists("remind_dir")) c(file.path(remind_dir, "output"), remind_dir) else "./output"
+  if (exists("remind_dir")) {
+    dir_folder <- c(file.path(remind_dir, "output"), remind_dir)
+  } else {
+    defaultcfg <- readDefaultConfig(".")
+    dir_folder <- unique(c("output", dirname(defaultcfg$results_folder)))
+  }
   dirs <- dirname(Sys.glob(file.path(dir_folder, "*", "fulldata.gdx")))
   if (needingMif) dirs <- intersect(dirs, unique(dirname(Sys.glob(file.path(dir_folder, "*", "REMIND_generic_*.mif")))))
   dirnames <- if (length(dir_folder) == 1) basename(dirs) else dirs
@@ -197,7 +208,7 @@ if (comp %in% c("comparison", "export")) {
   }
 } else { # comp = single
   # define slurm class or direct execution
-  outputInteractive <- c("plotIterations", "fixOnRef")
+  outputInteractive <- c("plotIterations", "fixOnRef", "integratedDamageCosts")
   if (! exists("source_include")) {
     # for selected output scripts, only slurm configurations matching these regex are available
     slurmExceptions <- if ("reporting" %in% output) "--mem=[0-9]*[0-9]{3}" else NULL
