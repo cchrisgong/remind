@@ -1,4 +1,11 @@
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
+# |  authors, and contributors see CITATION.cff file. This file is part
+# |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
+# |  AGPL-3.0, you are granted additional permissions described in the
+# |  REMIND License Exception, version 1.0 (see LICENSE file).
+# |  Contact: remind@pik-potsdam.de
 library(piamutils)
+library(piamInterfaces)
 library(quitte)
 suppressPackageStartupMessages(library(tidyverse))
 
@@ -11,6 +18,8 @@ if(! exists("source_include")) {
 scen <- lucode2::getScenNames(outputdir)
 mif  <- file.path(outputdir, paste0("REMIND_generic_", scen, ".mif"))
 mifdata <- as.quitte(mif)
+envi <- new.env()
+load(file.path(outputdir, "config.Rdata"), env =  envi)
 
 stopmessage <- NULL
 
@@ -50,6 +59,7 @@ for (mapping in c("AR6", "NAVIGATE")) {
     droplevels()
   
   csregi <- d %>%
+    filter(.data$region %in% unique(c("GLO", "World", read.csv2(envi$cfg$regionmapping)$RegionCode))) %>%
     checkSummationsRegional(skipUnits = TRUE) %>%
     rename(World = "total") %>%
     droplevels()

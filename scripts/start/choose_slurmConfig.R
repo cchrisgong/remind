@@ -1,4 +1,4 @@
-# |  (C) 2006-2023 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -53,10 +53,10 @@ choose_slurmConfig <- function(identifier = FALSE, flags = NULL) {
                     "2" = "--qos=standby --nodes=1 --tasks-per-node=13"  , # SLURM standby  - task per node: 13 (nash H12 coupled)
                     "3" = "--qos=standby --nodes=1 --tasks-per-node=16"  , # SLURM standby  - task per node: 16 (nash H12+)
                     "4" = "--qos=standby --nodes=1 --tasks-per-node=1 --mem=8000"   , # SLURM standby  - task per node:  1 (nash debug, test one regi)
-                    "5" = "--qos=priority --nodes=1 --tasks-per-node=12" , # SLURM priority - task per node: 12 (nash H12) [recommended]
-                    "6" = "--qos=priority --nodes=1 --tasks-per-node=13" , # SLURM priority - task per node: 13 (nash H12 coupled)
-                    "7" = "--qos=priority --nodes=1 --tasks-per-node=16" , # SLURM priority - task per node: 16 (nash H12+)
-                    "8" = "--qos=priority --nodes=1 --tasks-per-node=1 --mem=8000"  , # SLURM priority - task per node:  1 (nash debug, test one regi)
+                    "5" = "--qos=priority --partition=priority --nodes=1 --tasks-per-node=12" , # SLURM priority - task per node: 12 (nash H12) [recommended]
+                    "6" = "--qos=priority --partition=priority --nodes=1 --tasks-per-node=13" , # SLURM priority - task per node: 13 (nash H12 coupled)
+                    "7" = "--qos=priority --partition=priority --nodes=1 --tasks-per-node=16" , # SLURM priority - task per node: 16 (nash H12+)
+                    "8" = "--qos=priority --partition=priority --nodes=1 --tasks-per-node=1 --mem=8000"  , # SLURM priority - task per node:  1 (nash debug, test one regi)
                     "9" = "--qos=short --nodes=1 --tasks-per-node=12"    , # SLURM short    - task per node: 12 (nash H12)
                    "10" = "--qos=short --nodes=1 --tasks-per-node=16"    , # SLURM short    - task per node: 16 (nash H12+)
                    "11" = "--qos=short --nodes=1 --tasks-per-node=1 --mem=8000"     , # SLURM short    - task per node:  1 (nash debug, test one regi)

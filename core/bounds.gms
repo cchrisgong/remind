@@ -1,4 +1,4 @@
-*** |  (C) 2006-2023 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -70,6 +70,10 @@ vm_deltaCap.fx(t,regi,"pcc",rlf) = 0;
 vm_cap.fx(t,regi,"pco",rlf)     = 0;
 vm_deltaCap.fx(t,regi,"pco",rlf) = 0;
 
+*' Switch off grey hydrogen investments in gash2 technology from 2025. Our current seh2 hydrogen represents only additional (clean) hydrogen use cases to current ones
+*' and there are no plans to expand grey hydrogen production for that.
+*' It is allowed before 2020 to not make the model infeasible for low demands of hydrogen in that year.
+vm_deltaCap.up(t,regi,"gash2",rlf)$((t.val ge 2025)) = 1e-8;
 *' @stop
 
 *** -----------------------------------------------------------------------------------------------------------------
@@ -391,21 +395,17 @@ $endif
 
 
 *** -------------------------------------------------------------------------------------------------------------
-*AM* No geological storage before 2025 (omitting approx. 40 MtCCS/yr globally in 2020 for Enhanced Oil Recovery)
-*AM* Lower limit for 2025 and 2030 is capacities of all projects that are operational and under construction from project data base
-*AM* Upper limit for 2025 and 2030 additionally includes announced/planned projects from project data base
+*AM* Lower limit for 2020-2030 is capacities of all projects that are operational (2020-2030) and under construction (2025-2030) from project data base
+*AM* Upper limit for 2025 and 2030 additionally includes 40% (default, or changed by c_fracRealfromAnnouncedCCScap2030) announced/planned projects from project data base
 *AM* In nash-mode regions cannot easily share ressources, therefore CCS potentials are redistributed in Europe: 
 *AM* Potential of EU27 regions is pooled and redistributed according to GDP (Only upper limit for 2030)
 *AM* Norway and UK announced to store CO2 for EU27 countries. So 50% of Norway and UK potential in 2030 is attributed to EU27-Pool
 *LP* if c_ccsinjecratescen=0 --> no CCS at all and vm_co2CCS is fixed to 0 before, therefore the upper bound is only set if there should be CCS!
 *** -------------------------------------------------------------------------------------------------------------
 
-if ( c_ccsinjecratescen gt 0,
-  vm_co2CCS.up(ttot,regi,"cco2","ico2","ccsinje","1")$(ttot.val ge 2005 AND ttot.val lt 2025) = 0;
-	vm_co2CCS.up("2025",regi,"cco2","ico2","ccsinje","1") = pm_boundCapCCS("2025",regi,"up")/(1000*11/3);
-	vm_co2CCS.up("2030",regi,"cco2","ico2","ccsinje","1") = pm_boundCapCCS("2030",regi,"up")/(1000*11/3);
-	vm_co2CCS.lo("2025",regi,"cco2","ico2","ccsinje","1") = pm_boundCapCCS("2025",regi,"low")/(1000*11/3);
-	vm_co2CCS.lo("2030",regi,"cco2","ico2","ccsinje","1") = pm_boundCapCCS("2030",regi,"low")/(1000*11/3);
+if ( (c_ccsinjecratescen gt 0) AND (NOT cm_emiscen eq 1),
+  vm_co2CCS.lo(t,regi,"cco2","ico2","ccsinje","1")$(t.val le 2030) = pm_boundCapCCS(t,regi,"low")$(t.val le 2030) * s_MtCO2_2_GtC;
+  vm_co2CCS.up(t,regi,"cco2","ico2","ccsinje","1")$(t.val le 2030) = (pm_boundCapCCS(t,regi,"low")$(t.val le 2030) + (pm_boundCapCCS(t,regi,"up")$(t.val le 2030) - pm_boundCapCCS(t,regi,"low")$(t.val le 2030)) * c_fracRealfromAnnouncedCCScap2030) * s_MtCO2_2_GtC;
 );
 
 loop(regi,
@@ -545,6 +545,5 @@ $ENDIF.transpGDPscale
 
 v_changeProdStartyearSlack.up(t,regi,te)$( (t.val gt 2005) AND (t.val eq cm_startyear ) ) = + c_SlackMultiplier * p_adj_seed_reg(t,regi) * p_adj_seed_te(t,regi,te) ;
 v_changeProdStartyearSlack.lo(t,regi,te)$( (t.val gt 2005) AND (t.val eq cm_startyear ) ) = - c_SlackMultiplier * p_adj_seed_reg(t,regi) * p_adj_seed_te(t,regi,te) ;
-
 
 *** EOF ./core/bounds.gms
