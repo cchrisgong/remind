@@ -1747,6 +1747,7 @@ $setGlobal c_empty_model   off    !! def = off  !! regexp = off|on
 $setglobal cm_secondary_steel_bound  scenario   !! def = scenario
 $setglobal c_GDPpcScen  SSP2     !! def = gdp_SSP2   (automatically adjusted by start_run() based on GDPscen)
 $setglobal cm_demScen  gdp_SSP2     !! def = gdp_SSP2
+$setglobal cm_regiDemScen  default !! def = default !! regexp = default|NlowShigh
 $setGlobal c_scaleEmiHistorical  on  !! def = on  !! regexp = off|on
 $SetGlobal cm_quick_mode  off          !! def = off  !! regexp = off|on
 $setGLobal cm_debug_preloop  off    !! def = off  !! regexp = off|on

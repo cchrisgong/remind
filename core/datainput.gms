@@ -1573,14 +1573,31 @@ o_reached_until2150pricepath(iteration) = 0;
 *** ---- FE demand trajectories for calibration -------------------------------
 *** also used for limiting secondary steel demand in baseline and policy
 *** scenarios
+
+*** if demand is normal / default (IKEA)
+$ifthen.cm_regiDemScen "%cm_regiDemScen%" == "default"
+
 Parameter
 f_fedemand(tall,all_regi,all_demScen,all_in)   "final energy demand"
 /
 $ondelim
-$include "./core/input/f_fedemand.cs4r"
+$include "./core/input/f_fedemand_default.cs4r"
 $offdelim
 /
 ;
+$endif.cm_regiDemScen
+
+$ifthen.cm_regiDemScen "%cm_regiDemScen%" == "NlowShigh"
+Parameter
+f_fedemand(tall,all_regi,all_demScen,all_in)   "final energy demand"
+/
+$ondelim
+$include "./core/input/f_fedemand_NlowShigh.cs4r"
+$offdelim
+/
+;
+$endif.cm_regiDemScen
+
 
 *** use cm_demScen for Industry and Buildings
 *** cm_GDPscen will be used for Transport (EDGE-T) (see p29_trpdemand)
