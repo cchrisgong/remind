@@ -268,6 +268,8 @@ $ENDIF.WindOff
 
         weathering      "enhanced weathering"
         dac             "direct air capture"
+        oae_ng          "ocean akalinity ehnacement via ocean liming using a traditional calciner"
+        oae_el          "ocean akalinity ehnacement via ocean liming using a novel calciner technology"
         x_gas2elec
         d_bio2elec      "d_* transmission and distribution losses"
         d_coal2elec
@@ -2426,6 +2428,9 @@ $ENDIF.WindOff
         peur.seel.tnrs
         peur.seel.fnrs
 /
+
+pese(all_enty,all_enty) "map primary to secondary energy carriers without technology dimension"
+//
 
 seAgg(all_enty) "secondary energy aggregations"
 /
