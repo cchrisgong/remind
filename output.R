@@ -87,7 +87,7 @@ if ("--help" %in% flags) {
 choose_slurmConfig_output <- function(output) {
   slurm_options <- c("--qos=priority --partition=priority", "--qos=short", "--qos=standby",
                      "--qos=priority --partition=priority --mem=8000", "--qos=short --mem=8000",
-                     "--qos=standby --mem=8000", "--qos=priority --partition=priority --mem=32000")
+                     "--qos=standby --mem=8000", "--qos=priority --partition=priority --mem-per-cpu=32000")
 
   if (!isSlurmAvailable())
     return("direct")
