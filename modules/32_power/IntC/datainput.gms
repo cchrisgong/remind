@@ -41,10 +41,9 @@ $offdelim
 
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
 f32_factorStorage(all_regi,"windoff") = f32_factorStorage(all_regi,"wind");
-f32_factorStorage(all_regi,"wind")      = f32_factorStorage(all_regi,"wind"); 
 $ENDIF.WindOff
-f32_factorStorage(all_regi,"wind") = 0.6 * f32_factorStorage(all_regi,"wind");
-f32_factorStorage(all_regi,"windoff") = 0.7 * f32_factorStorage(all_regi,"windoff");
+f32_factorStorage(all_regi,"wind") = 0.2 * f32_factorStorage(all_regi,"wind");
+f32_factorStorage(all_regi,"windoff") = 0.3 * f32_factorStorage(all_regi,"windoff");
 p32_factorStorage(all_regi,all_te) = f32_factorStorage(all_regi,all_te);
 
 $if not "%cm_storageFactor%" == "off" p32_factorStorage(all_regi,all_te)=%cm_storageFactor%*p32_factorStorage(all_regi,all_te);
@@ -52,9 +51,9 @@ $if not "%cm_storageFactor%" == "off" p32_factorStorage(all_regi,all_te)=%cm_sto
 ***parameter p32_storexp(all_regi,all_te) - exponent that determines how curtailment and storage requirements per kW increase with market share of wind and solar. 1 means specific marginal costs increase linearly
 p32_storexp(regi,"spv")     = 1;
 p32_storexp(regi,"csp")     = 1;
-p32_storexp(regi,"wind")    = 0.7;
+p32_storexp(regi,"wind")    = 1;
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
-p32_storexp(regi,"windoff")    = 0.7;
+p32_storexp(regi,"windoff")    = 1;
 $ENDIF.WindOff
 
 
