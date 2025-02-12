@@ -1821,10 +1821,6 @@ $setglobal cm_tech_bounds_2025  on  !! def = on  !! regexp = on|off
 *** set conopt version. Warning: conopt4 is in beta
 $setGlobal cm_conoptv  conopt3    !! def = conopt3
 *** cm_indCoalPOSpeed
-*** plateau25: plateau until 2025, po around 2045
-*** plateau30: plateau until 2030, po around 2050
-*** fast: fast PO, po around 2035
-*** medium: medium PO, po around 2040
 *** slow: slow PO, po around 2050
 $setglobal cm_indCoalPOSpeed none    !! def = none
 *' c_empty_model  "Short-circuit the model, just use the input as solution"
