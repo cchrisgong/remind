@@ -48,7 +48,7 @@ q05_eedemini(regi,enty)..
   + sum(tePrc2opmoPrc(tePrc,opmoPrc)$(pm_specFeDem("2005",regi,enty,tePrc,opmoPrc) gt 0.),
       pm_specFeDem("2005",regi,enty,tePrc,opmoPrc)
       *
-      pm_outflowPrcIni(regi,tePrc,opmoPrc)
+      pm_outflowPrcHist("2005",regi,tePrc,opmoPrc)
     )$(entyFeStat(enty))
   ) * s05_inic_switch
     !! Transformation pathways that consume this enty:
@@ -121,14 +121,9 @@ display v05_INIdemEn0.l, v05_INIcap0.l;
 
 p05_cap0(regi,te) = v05_INIcap0.l(regi,te);
 
-$ifthen.cm_subsec_model_steel "%cm_subsec_model_steel%" == "processes"
-p05_cap0(regi,'bof') = pm_outflowPrcIni(regi,'bof','unheated') / pm_cf("2005",regi,'bof');
-p05_cap0(regi,'bf')  = pm_outflowPrcIni(regi,'bf','standard')  / pm_cf("2005",regi,'bf');
-p05_cap0(regi,'eaf') = pm_outflowPrcIni(regi,'eaf','sec')      / pm_cf("2005",regi,'eaf');
-p05_cap0(regi,'idr') = 0.;
-p05_cap0(regi,"bfcc") =0.;
-p05_cap0(regi,"idrcc") =0.;
-$endif.cm_subsec_model_steel
+loop(tePrc,
+  p05_cap0(regi,tePrc) = sum(tePrc2opmoPrc(tePrc,opmoPrc), pm_outflowPrcHist("2005",regi,tePrc,opmoPrc)) / pm_cf("2005",regi,tePrc);
+);
 
 *RP keep energy demand for the Kyoto target calibration
 pm_EN_demand_from_initialcap2(regi,enty) = v05_INIdemEn0.l(regi,enty);
@@ -211,7 +206,9 @@ loop(regi,
 loop(regi,
   loop(opTimeYr2te(te,opTimeYr)$(NOT teReNoBio(te)),
     loop(tsu2opTime5(ttot,opTimeYr),
-      loop(pe2se(entyPe,entySe,te), o_INI_DirProdSeTe(regi,entySe,te) = p05_cap0(regi,te) * pm_cf("2005",regi,te) * pm_dataren(regi,"nur","1",te) );
+      loop(pe2se(entyPe,entySe,te), 
+        o_INI_DirProdSeTe(regi,entySe,te) = p05_cap0(regi,te) * pm_cf("2005",regi,te) * pm_dataren(regi,"nur","1",te)
+      );
       sm_tmp = 1 / pm_ts(ttot) * p05_cap0(regi,te) * p05_vintage(regi,opTimeYr,te);
 
       vm_deltaCap.lo(ttot,regi,te,"1") = sm_tmp;
@@ -466,12 +463,12 @@ $endif
 );
 
 * quickest phaseout in SDP scenarios (no new capacities allowed), quick phaseout in SSP1 und SSP5
-$if %cm_GDPscen% == "gdp_SDP" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
-$if %cm_GDPscen% == "gdp_SDP_EI" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
-$if %cm_GDPscen% == "gdp_SDP_MC" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
-$if %cm_GDPscen% == "gdp_SDP_RC" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
-$if %cm_GDPscen% == "gdp_SSP1" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0.5 * p05_deltacap_res(t,regi,"biotr");
-$if %cm_GDPscen% == "gdp_SSP5" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0.5 * p05_deltacap_res(t,regi,"biotr");
+$if %cm_GDPpopScen% == "SDP" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
+$if %cm_GDPpopScen% == "SDP_EI" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
+$if %cm_GDPpopScen% == "SDP_MC" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
+$if %cm_GDPpopScen% == "SDP_RC" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0;
+$if %cm_GDPpopScen% == "SSP1" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0.5 * p05_deltacap_res(t,regi,"biotr");
+$if %cm_GDPpopScen% == "SSP5" p05_deltacap_res(t,regi,"biotr")$(t.val gt 2020) = 0.5 * p05_deltacap_res(t,regi,"biotr");
 
 display p05_deltacap_res;
 
@@ -511,24 +508,14 @@ loop(regi,
 );
 display pm_EN_demand_from_initialcap2, p05_emi2005_from_initialcap2;
 
-*** To be moved to new emiAccounting module
-* Discounting se2fe emissions from pe2se emission factors
-loop(entySe$(sameas(entySe,"segafos") OR sameas(entySe,"seliqfos") OR sameas(entySe,"sesofos")),
-  pm_emifac(ttot,regi,entyPe,entySe,te,"co2")$pm_emifac(ttot,regi,entyPe,entySe,te,"co2") =
-    pm_emifac(ttot,regi,entyPe,entySe,te,"co2")
-    - pm_eta_conv(ttot,regi,te)
-      *( sum(se2fe(entySe,entyFe2,te2)$pm_emifac(ttot,regi,entySe,entyFe2,te2,"co2"), pm_emifac(ttot,regi,entySe,entyFe2,te2,"co2")*pm_eta_conv(ttot,regi,te2))/sum(se2fe(entySe,entyFe2,te2)$pm_emifac(ttot,regi,entySe,entyFe2,te2,"co2"),1)  );
 );
 
-display pm_emifac;
 
-);
 
 *** if cm_startyear > 2005, load outputs of InitialCap from input_ref.gdx
 if (cm_startyear gt 2005,
   Execute_Loadpoint 'input_ref' pm_eta_conv = pm_eta_conv;
   Execute_Loadpoint 'input_ref' o_INI_DirProdSeTe = o_INI_DirProdSeTe;
-  Execute_Loadpoint 'input_ref' pm_emifac = pm_emifac;
   Execute_Loadpoint 'input_ref' pm_EN_demand_from_initialcap2 = pm_EN_demand_from_initialcap2;
   Execute_Loadpoint 'input_ref' pm_pedem_res = pm_pedem_res;
   Execute_Loadpoint 'input_ref' pm_dataeta = pm_dataeta;
@@ -543,7 +530,7 @@ if (cm_startyear gt 2005,
 *** Only the eta values of chp technologies have been adapted by initialCap script above.
 *** This is to avoid overwriting all of pm_data and make sure that scenario switches which adapt pm_data before this module work as intended.
   Execute_Loadpoint 'input_ref' p05_pmdata_ref = pm_data;
-  pm_data(regi,char,te)$( (sameas(te,"coalchp")  
+  pm_data(regi,char,te)$( (sameas(te,"coalchp")
                               OR sameas(te,"gaschp")
                               OR sameas(te,"biochp") )
                             AND sameas(char,"eta") ) = p05_pmdata_ref(regi,char,te);
@@ -561,5 +548,16 @@ $ifThen %cm_techcosts% == "GLO"
                             OR sameas(te,"ngcc") ) ) = p05_inco0_t_ref(t,regi,te);
 $endIf
 );
+
+*** To be moved to new emiAccounting module
+* Discounting se2fe emissions from pe2se emission factors
+loop(entySe$(sameas(entySe,"segafos") OR sameas(entySe,"seliqfos") OR sameas(entySe,"sesofos")),
+  pm_emifac(ttot,regi,entyPe,entySe,te,"co2")$pm_emifac(ttot,regi,entyPe,entySe,te,"co2") =
+    pm_emifac(ttot,regi,entyPe,entySe,te,"co2")
+    - pm_eta_conv(ttot,regi,te)
+      *( sum(se2fe(entySe,entyFe2,te2)$pm_emifac(ttot,regi,entySe,entyFe2,te2,"co2"), pm_emifac(ttot,regi,entySe,entyFe2,te2,"co2")*pm_eta_conv(ttot,regi,te2))/sum(se2fe(entySe,entyFe2,te2)$pm_emifac(ttot,regi,entySe,entyFe2,te2,"co2"),1)  );
+);
+
+display pm_emifac;
 
 *** EOF ./modules/05_initialCap/on/preloop.gms

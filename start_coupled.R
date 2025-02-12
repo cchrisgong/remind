@@ -33,7 +33,7 @@ start_coupled <- function(path_remind, path_magpie, cfg_rem, cfg_mag, runname, m
   # Retrieve REMIND settings
 #  cfg_rem <- check_config(cfg_rem, file.path(path_remind, "config", "default.cfg"), file.path(path_remind, "modules"),
 #                          extras = c("backup", "remind_folder", "pathToMagpieReport", "cm_nash_autoconverge_lastrun",
-#                                     "gms$c_expname", "restart_subsequent_runs", "gms$c_GDPpcScen",
+#                                     "gms$c_expname", "restart_subsequent_runs",
 #                                     "gms$cm_CES_configuration", "gms$c_description"))
   cfg_rem$slurmConfig   <- "direct"
   cfg_rem_original <- c(setdiff(cfg_rem$output, "emulator"), "emulator") # save default remind output config and add "emulator" if missing
@@ -42,7 +42,6 @@ start_coupled <- function(path_remind, path_magpie, cfg_rem, cfg_mag, runname, m
   cfg_mag <- check_config(cfg_mag, file.path(path_magpie, "config", "default.cfg"), file.path(path_magpie,"modules"))
   cfg_mag$sequential <- TRUE
   cfg_mag$force_replace <- TRUE
-  cfg_mag$output     <- c("rds_report") # ,"remind","report") # rds_report: MAgPIE4; remind,report: MAgPIE3 (glo.modelstat.csv)
   # if provided use ghg prices for land (MAgPIE) from a different REMIND run than the one MAgPIE runs coupled to
   use_external_ghgprices <- ifelse(is.na(cfg_mag$path_to_report_ghgprices), FALSE, TRUE)
 
