@@ -165,6 +165,28 @@ if (cm_EnSecScen_limit gt 0,
     vm_prodPe.up(t,regi,"pegas")$((t.val ge 2025) AND (sameas(regi,"DEU"))) = cm_EnSecScen_limit/pm_conv_TWa_EJ;
 );
 
+*UP: During 2015-2020, IND capacity addition was 9.8% p.a.for wind and 48% p.a. for spv.
+*UP: During 2020-2025, IND capacity addition is expected to be 6.9% p.a. for wind and 28% p.a. for spv.
+*UP: During 2020-2025, IND capacity addition is expected to be 15% p.a. for wind and 20% p.a. for spv.
+$ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
+loop(regi$(sameAs(regi,"IND")),
+vm_deltaCap.up("2020",regi,"wind","1")= 0.098*vm_capCum.l("2015",regi,"wind");
+vm_deltaCap.up("2020",regi,"spv", "1")= 0.477*vm_capCum.l("2015",regi,"spv");
+
+vm_deltaCap.up("2025",regi,"wind","1")= 0.069*vm_capCum.l("2020",regi,"wind");
+*vm_deltaCap.up("2025",regi,"spv", "1")= 0.280*vm_capCum.l("2020",regi,"spv");
+
+vm_deltaCap.up("2030",regi,"wind","1")= 0.149*vm_capCum.l("2025",regi,"wind");
+vm_deltaCap.up("2030",regi,"spv", "1")= 0.199*vm_capCum.l("2025",regi,"spv");
+
+*vm_deltaCap.up("2035",regi,"wind","1")= 0.100*vm_capCum.l("2030",regi,"wind");
+*vm_deltaCap.up("2035",regi,"spv", "1")= 0.100*vm_capCum.l("2030",regi,"spv");
+
+*vm_deltaCap.up("2040",regi,"wind","1")= 0.095*vm_capCum.l("2035",regi,"wind");
+*vm_deltaCap.up("2040",regi,"spv", "1")= 0.100*vm_capCum.l("2035",regi,"spv");
+);
+$endif.indPOpolicy
+
 *' ##### Bounds for EU subregions
 
 *' ###### Bounds for historic and near-term Alignment

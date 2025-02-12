@@ -482,6 +482,7 @@ $ifthen.REG_techcosts "%cm_techcosts%" == "REG"   !! cm_techcosts REG
     );
 $endif.REG_techcosts
 
+pm_inco0_t(ttot,"IND","tnrs") = c_nucCost * pm_inco0_t(ttot,"IND","tnrs");
 
 *------------------------------------------------------------------------------------
 ***   END of Technology cost data input read-in and manipulation in core
@@ -741,6 +742,20 @@ pm_cf(ttot,regi,"ngt")$(ttot.val eq 2030) = 0.8 * pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"ngt")$(ttot.val eq 2035) = 0.7 * pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"ngt")$(ttot.val ge 2040) = 0.6 * pm_cf(ttot,regi,"ngt");
 
+*UP* phasing down pc cf to "peak load" cf for IND
+
+$ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
+pm_cf(ttot,"IND","pc")$(ttot.val le 2020) = 1.10 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 1.15 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.20 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.10 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.00 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2045) = 0.90 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2050) = 0.75 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2055) = 0.60 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val ge 2060) = 0.45 * pm_cf("2015","IND","pc");
+$endif.indPOpolicy
+
 *RP* set H2 turbines to the same CF values
 pm_cf(ttot,regi,"h2turb")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"h2turbVRE")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
@@ -748,7 +763,6 @@ pm_cf(ttot,regi,"h2turbVRE")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
 *** FS: set CF of additional t&d H2 for buildings and industry to t&d H2 stationary value
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
 pm_cf(ttot,regi,"tdh2i") = pm_cf(ttot,regi,"tdh2s");
-
 
 *** Region- and tech-specific early retirement rates
 ***Regional*
@@ -771,6 +785,20 @@ loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
   pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and (t.val lt c_earlyRetiValidYr or sameas(ext_regi,"GLO"))) = p_techEarlyRetiRate(ext_regi,te);
 );
 $endif.tech_earlyreti
+
+*UP* IND-specific pc rate
+$ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
+*** Allow first slow then fast phase-out cap
+*pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2020) = 0.001;
+*pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2025) = 0.001;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2030) = 0.001;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2035) = 0.0015;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2040) = 0.0025;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2045) = 0.005;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2050) = 0.010;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2055) = 0.025;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val ge 2060) = 0.045;
+$endif.indPOpolicy
 
 *** Time-dependent early retirement rates in Baseline scenarios
 $ifthen.Base_Cprice %carbonprice% == "none"
@@ -1151,7 +1179,6 @@ $ifthen.VREPot_Factor not "%c_VREPot_Factor%" == "off"
   );
 $endif.VREPot_Factor
 
-
 *** -----------------------------------------------------------------
 
 pm_dataeta(tall,regi,te) = f_dataetaglob(tall,te);
@@ -1311,7 +1338,6 @@ p_emi_quan_conv_ar4("n2owaste")   = sm_tgn_2_pgc * (298/s_gwpN2O);
 
 *RP* Distribute ccap0 for all regions
 pm_data(regi,"ccap0",te) = 1/card(regi)*fm_dataglob("ccap0",te);
-
 
 *** -----------------------------------------------------------------------------
 *** ------------ emission budgets and their time periods ------------------------
@@ -1610,7 +1636,6 @@ $offdelim
 pm_fedemand(t,regi,cal_ppf_buildings_dyn36) = f_fedemand_build(t,regi,"%cm_demScen%","%cm_rcp_scen_build%",cal_ppf_buildings_dyn36);
 $endif.cm_rcp_scen_build
 
-
 *** Scale FE demand across industry and building sectors
 $ifthen.scaleDemand not "%cm_scaleDemand%" == "off"
   loop((tall,tall2,all_regi) $ pm_scaleDemand(tall,tall2,all_regi),
@@ -1618,7 +1643,6 @@ $ifthen.scaleDemand not "%cm_scaleDemand%" == "off"
       pm_fedemand(t,all_regi,all_in) = pm_fedemand(t,all_regi,all_in) * ( pm_scaleDemand(tall,tall2,all_regi) + (1-pm_scaleDemand(tall,tall2,all_regi)) * min(1, max(0, tall2.val-t.val) / (tall2.val-tall.val)) );
   );
 $endif.scaleDemand
-
 
 *** initialize global target deviation scalar
 sm_globalBudget_dev = 1;
