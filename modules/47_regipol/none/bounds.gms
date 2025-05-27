@@ -38,6 +38,24 @@ vm_deltaCap.up("2025",regi,"ngcc","1") = 0.0015;
 vm_capEarlyReti.up('2025',regi,'pc') = 0.65; 
 );
 
+*** China-specific brownfield planning pipeline 
+
+$ifthen.chaCoalBounds not "%cm_chaCoalBounds%" == "off"
+loop(regi$(sameAs(regi,"CHA")),
+*** 2020 to 2025 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 95GW addition, and 20GW early retirement (the 75GW is derived roughly from global energy monitor and PyPSA coal capacity near-term data)
+vm_deltaCap.lo("2025",regi,"pc","1") = 95 * 0.78 / 1e3;
+vm_deltaCap.lo("2025",regi,"coalchp","1") = 95 * 0.22 / 1e3;
+vm_capEarlyReti.lo('2025',regi,'pc') = 20 * 0.78 / 1e3;
+vm_capEarlyReti.lo('2025',regi,'coalchp') = 20 * 0.22 / 1e3;
+
+*** 2025 to 2030 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 95GW addition, and 20GW early retirement (the 75GW is derived roughly from global energy monitor and PyPSA coal capacity near-term data)
+vm_deltaCap.lo("2030",regi,"pc","1") = 95 * 0.78 / 1e3;
+vm_deltaCap.lo("2030",regi,"coalchp","1") = 95 * 0.22 / 1e3;
+vm_capEarlyReti.lo('2030',regi,'pc') = 20 * 0.78 / 1e3;
+vm_capEarlyReti.lo('2030',regi,'coalchp') = 20 * 0.22 / 1e3;
+);
+$endif.chaCoalBounds
+
 *' This bound avoids hydrogen production from gas in the European region (unlikely to happen after recent gas trade changes)
 vm_deltaCap.up(t,regi,"gasftrec",rlf)$((t.val gt 2005) and (regi_group("EUR_regi",regi))) = 0;
 vm_deltaCap.up(t,regi,"gasftcrec",rlf)$((t.val gt 2005) and (regi_group("EUR_regi",regi))) = 0;

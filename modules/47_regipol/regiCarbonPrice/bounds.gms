@@ -222,6 +222,24 @@ $IFTHEN.CoalRegiPol not "%cm_CoalRegiPol%" == "off"
 
 $ENDIF.CoalRegiPol  
 
+*** China-specific brownfield planning pipeline
+
+$ifthen.chaCoalBounds not "%cm_chaCoalBounds%" == "off"
+loop(regi$(sameAs(regi,"CHA")),
+*** 2020 to 2025 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 95GW addition, and 20GW early retirement (the 75GW is derived roughly from global energy monitor and PyPSA coal capacity near-term data), divide by 5 for the annual average over one REMIND period of 5 years
+vm_deltaCap.lo("2025",regi,"pc","1") = (95 / 5) * 0.78 / 1e3;
+vm_deltaCap.lo("2025",regi,"coalchp","1") = (95 / 5) * 0.22 / 1e3;
+vm_capEarlyReti.lo('2025',regi,'pc') = (20 / 5) * 0.78 / 1e3;
+vm_capEarlyReti.lo('2025',regi,'coalchp') = (20 / 5) * 0.22 / 1e3;
+
+*** 2025 to 2030 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 95GW addition, and 20GW early retirement (the 75GW is derived roughly from global energy monitor and PyPSA coal capacity near-term data)
+vm_deltaCap.lo("2030",regi,"pc","1") = (95 / 5) * 0.78 / 1e3;
+vm_deltaCap.lo("2030",regi,"coalchp","1") = (95 / 5) * 0.22 / 1e3;
+vm_capEarlyReti.lo('2030',regi,'pc') = (20 / 5) * 0.78 / 1e3;
+vm_capEarlyReti.lo('2030',regi,'coalchp') = (20 / 5) * 0.22 / 1e3;
+);
+$endif.chaCoalBounds
+
 
 *' Represent region-specific renewable power policies with minimum VRE shares over time. 
 $ifthen.cm_VREminShare not "%cm_VREminShare%" == "off"
