@@ -56,6 +56,8 @@ display p45_factorRescaleCO2TaxLtd_iter;
 pm_taxCO2eq(t,regi)$(sameas(t,"2025") AND sameas(regi,"SSA")) = min(pm_taxCO2eq("2025",regi)$(sameas(regi,"SSA")),30 * sm_DptCO2_2_TDpGtC);
 pm_taxCO2eq(t,regi)$(sameas(t,"2030") AND sameas(regi,"SSA")) = min(pm_taxCO2eq("2030",regi)$(sameas(regi,"SSA")),45 * sm_DptCO2_2_TDpGtC);
 
+*pm_taxCO2eq(t,regi)$(sameas(t,"2030") AND sameas(regi,"IND")) = min(pm_taxCO2eq("2030",regi)$(sameas(regi,"IND")),45 * sm_DptCO2_2_TDpGtC);
+
 *** calculate tax path until NDC target year - linear increase
 p45_taxCO2eqFirstNDCyear(regi) = smax(t$(t.val = p45_firstNDCyear(regi)), pm_taxCO2eq(t,regi));
 pm_taxCO2eq(t,regi)$(t.val > 2021 AND t.val < p45_firstNDCyear(regi)) = (p45_taxCO2eqFirstNDCyear(regi) - pm_taxCO2eq("2020",regi))*(t.val-2020)/(p45_firstNDCyear(regi)-2020) + pm_taxCO2eq("2020",regi);
