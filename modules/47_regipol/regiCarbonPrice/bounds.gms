@@ -171,7 +171,7 @@ if (cm_EnSecScen_limit gt 0,
 $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
 loop(regi$(sameAs(regi,"IND")),
 vm_deltaCap.up("2020",regi,"wind","1")= 0.098*vm_capCum.l("2015",regi,"wind");
-vm_deltaCap.up("2020",regi,"spv", "1")= 0.477*vm_capCum.l("2015",regi,"spv");
+*vm_deltaCap.up("2020",regi,"spv", "1")= 0.477*vm_capCum.l("2015",regi,"spv");
 
 vm_deltaCap.up("2025",regi,"wind","1")= 0.069*vm_capCum.l("2020",regi,"wind");
 *vm_deltaCap.up("2025",regi,"spv", "1")= 0.280*vm_capCum.l("2020",regi,"spv");
