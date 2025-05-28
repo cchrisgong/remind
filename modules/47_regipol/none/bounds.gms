@@ -42,17 +42,13 @@ vm_capEarlyReti.up('2025',regi,'pc') = 0.65;
 
 $ifthen.chaCoalBounds not "%cm_chaCoalBounds%" == "off"
 loop(regi$(sameAs(regi,"CHA")),
-*** 2020 to 2025 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 95GW addition, and 20GW early retirement (the 75GW is derived roughly from global energy monitor and PyPSA coal capacity near-term data)
-vm_deltaCap.lo("2025",regi,"pc","1") = 95 * 0.78 / 1e3;
-vm_deltaCap.lo("2025",regi,"coalchp","1") = 95 * 0.22 / 1e3;
-vm_capEarlyReti.lo('2025',regi,'pc') = 20 * 0.78 / 1e3;
-vm_capEarlyReti.lo('2025',regi,'coalchp') = 20 * 0.22 / 1e3;
+*** 2020 to 2025 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 350GW addition (2025 Q1 1451GW), deltacap(x) = added capacity between year x-1 and x; 78:22 ratio is based on pypsa data
+vm_deltaCap.lo("2025",regi,"pc","1") = 350 * 0.78 / 1e3;
+vm_deltaCap.lo("2025",regi,"coalchp","1") = 350 * 0.22 / 1e3;
 
-*** 2025 to 2030 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio among 95GW addition, and 20GW early retirement (the 75GW is derived roughly from global energy monitor and PyPSA coal capacity near-term data)
+*** 2025 to 2030 bounds on addition and early retirement, splitting bounds for pc and coalchp with 78:22 ratio amonng 150GW (2030 1600GW) (expert guess)
 vm_deltaCap.lo("2030",regi,"pc","1") = 95 * 0.78 / 1e3;
 vm_deltaCap.lo("2030",regi,"coalchp","1") = 95 * 0.22 / 1e3;
-vm_capEarlyReti.lo('2030',regi,'pc') = 20 * 0.78 / 1e3;
-vm_capEarlyReti.lo('2030',regi,'coalchp') = 20 * 0.22 / 1e3;
 );
 $endif.chaCoalBounds
 
