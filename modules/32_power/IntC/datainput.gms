@@ -33,9 +33,10 @@ parameter f32_factorStorage(all_regi,all_te) "multiplicative factor that scales 
 $ondelim
 $include "./modules/32_power/IntC/input/f32_factorStorage.cs4r"
 $offdelim
+/;
 
 f32_factorStorage(all_regi,"windon")  = 1.35 * f32_factorStorage(all_regi,"windon");
-/;
+
 
 p32_factorStorage(all_regi,teVRE) = f32_factorStorage(all_regi,teVRE);
 
