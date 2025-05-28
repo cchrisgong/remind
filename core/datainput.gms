@@ -161,7 +161,6 @@ $offdelim
 p_inco0(ttot,all_regi,"windon") $ (p_inco0(ttot,all_regi,"windon") eq 0) = p_inco0(ttot,all_regi,"wind");
 p_inco0(ttot,all_regi,"wind") = 0;
 
-
 ***---------------------------------------------------------------------------
 *** SSP-dependent technology assumptions
 ***---------------------------------------------------------------------------
@@ -778,17 +777,16 @@ pm_cf(ttot,regi,"ngt")$(ttot.val eq 2035) = 0.7 * pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"ngt")$(ttot.val ge 2040) = 0.6 * pm_cf(ttot,regi,"ngt");
 
 *UP* phasing down pc cf to "peak load" cf for IND
-
 $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
-pm_cf(ttot,"IND","pc")$(ttot.val le 2020) = 1.10 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 1.15 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.20 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.10 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.00 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2045) = 0.90 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2050) = 0.75 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2055) = 0.60 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val ge 2060) = 0.45 * pm_cf("2015","IND","pc");
+*pm_cf(ttot,"IND","pc")$(ttot.val le 2020) = 1.00 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) =  1.5 * pm_cf("2025","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.3 * pm_cf("2030","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.1 * pm_cf("2035","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.05 * pm_cf("2040","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2045) = 0.85 * pm_cf("2045","IND","pc");
+*pm_cf(ttot,"IND","pc")$(ttot.val eq 2050) = 0.75 * pm_cf("2015","IND","pc");
+*pm_cf(ttot,"IND","pc")$(ttot.val eq 2055) = 0.60 * pm_cf("2015","IND","pc");
+*pm_cf(ttot,"IND","pc")$(ttot.val ge 2060) = 0.45 * pm_cf("2015","IND","pc");
 $endif.indPOpolicy
 
 *RP* set H2 turbines to the same CF values
@@ -825,7 +823,7 @@ $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
 *** Allow first slow then fast phase-out cap
 *pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2020) = 0.001;
 *pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2025) = 0.001;
-pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2030) = 0.001;
+*pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2030) = 0.001;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2035) = 0.0015;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2040) = 0.0025;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2045) = 0.005;
@@ -1650,6 +1648,38 @@ pm_fedemand(tall,all_regi,in) = f_fedemand(tall,all_regi,"%cm_demScen%",in);
 *** data input for industry FE that is no part of the CES tree
 pm_fedemand(tall,all_regi,ppfen_no_ces_use) = f_fedemand(tall,all_regi,"%cm_demScen%",ppfen_no_ces_use);
 
+**Factor to increase steel demand
+*pm_fedemand("2020","IND","ue_steel_primary")   = pm_fedemand("2020","IND","ue_steel_primary")   * 1.3;
+*pm_fedemand("2020","IND","ue_steel_secondary") = pm_fedemand("2020","IND","ue_steel_secondary") * 1.3;
+
+*pm_fedemand("2025","IND","ue_steel_primary")   = pm_fedemand("2025","IND","ue_steel_primary")   * 1.3;
+*pm_fedemand("2025","IND","ue_steel_secondary") = pm_fedemand("2025","IND","ue_steel_secondary") * 1.3;
+
+pm_fedemand("2010","IND","ue_chemicals") = pm_fedemand("2010","IND","ue_chemicals") * 0.5;
+pm_fedemand("2015","IND","ue_chemicals") = pm_fedemand("2015","IND","ue_chemicals") * 0.4;
+pm_fedemand("2020","IND","ue_chemicals") = pm_fedemand("2020","IND","ue_chemicals") * 0.4;
+pm_fedemand("2025","IND","ue_chemicals") = pm_fedemand("2025","IND","ue_chemicals") * 0.4;
+pm_fedemand("2030","IND","ue_chemicals") = pm_fedemand("2030","IND","ue_chemicals") * 0.4;
+pm_fedemand("2035","IND","ue_chemicals") = pm_fedemand("2035","IND","ue_chemicals") * 0.45;
+pm_fedemand("2040","IND","ue_chemicals") = pm_fedemand("2040","IND","ue_chemicals") * 0.45;
+pm_fedemand("2045","IND","ue_chemicals") = pm_fedemand("2045","IND","ue_chemicals") * 0.5;
+pm_fedemand("2050","IND","ue_chemicals") = pm_fedemand("2050","IND","ue_chemicals") * 0.55;
+pm_fedemand("2055","IND","ue_chemicals") = pm_fedemand("2055","IND","ue_chemicals") * 0.55;
+pm_fedemand(tall,"IND","ue_chemicals")$(tall.val ge 2060) = pm_fedemand(tall,"IND","ue_chemicals") * 0.6;
+
+pm_fedemand("2010","IND","ue_otherInd") = pm_fedemand("2010","IND","ue_otherInd") * 0.1;
+pm_fedemand("2015","IND","ue_otherInd") = pm_fedemand("2015","IND","ue_otherInd") * 0.1;
+pm_fedemand("2020","IND","ue_otherInd") = pm_fedemand("2020","IND","ue_otherInd") * 0.12;
+pm_fedemand("2025","IND","ue_otherInd") = pm_fedemand("2025","IND","ue_otherInd") * 0.15;
+pm_fedemand("2030","IND","ue_otherInd") = pm_fedemand("2030","IND","ue_otherInd") * 0.2;
+pm_fedemand("2035","IND","ue_otherInd") = pm_fedemand("2035","IND","ue_otherInd") * 0.3;
+pm_fedemand("2040","IND","ue_otherInd") = pm_fedemand("2040","IND","ue_otherInd") * 0.35;
+pm_fedemand("2045","IND","ue_otherInd") = pm_fedemand("2045","IND","ue_otherInd") * 0.4;
+pm_fedemand("2050","IND","ue_otherInd") = pm_fedemand("2050","IND","ue_otherInd") * 0.45;
+pm_fedemand("2055","IND","ue_otherInd") = pm_fedemand("2055","IND","ue_otherInd") * 0.5;
+pm_fedemand(tall,"IND","ue_otherInd")$(tall.val ge 2060) = pm_fedemand(tall,"IND","ue_otherInd") * 0.5;
+
+
 *** RCP-dependent demands in buildings (climate impact)
 $ifthen.cm_rcp_scen_build not "%cm_rcp_scen_build%" == "none"
 Parameter f_fedemand_build(tall,all_regi,all_demScen,all_rcp_scen,all_in) "RCP-dependent final energy demand in buildings"
@@ -1658,7 +1688,6 @@ $ondelim
 $include "./core/input/f_fedemand_build.cs4r"
 $offdelim
 /;
-
 
 pm_fedemand(t,regi,cal_ppf_buildings_dyn36) = f_fedemand_build(t,regi,"%cm_demScen%","%cm_rcp_scen_build%",cal_ppf_buildings_dyn36);
 $endif.cm_rcp_scen_build
@@ -1670,6 +1699,10 @@ $ifthen.scaleDemand not "%cm_scaleDemand%" == "off"
       pm_fedemand(t,all_regi,all_in) = pm_fedemand(t,all_regi,all_in) * ( pm_scaleDemand(tall,tall2,all_regi) + (1-pm_scaleDemand(tall,tall2,all_regi)) * min(1, max(0, tall2.val-t.val) / (tall2.val-tall.val)) );
   );
 $endif.scaleDemand
+
+$ifthen.cm_rcp_scen_build not "%cm_rcp_scen_build%" == "none"
+pm_fedemand(tall,all_regi,cal_ppf_buildings_dyn36) = f_fedemand_build(tall,all_regi,"%cm_demScen%","%cm_rcp_scen_build%",cal_ppf_buildings_dyn36);
+$endif.cm_rcp_scen_build
 
 *** initialize absolute deviation of global cumulated CO2 emissions budget from target budget
 sm_globalBudget_absDev = 0;
