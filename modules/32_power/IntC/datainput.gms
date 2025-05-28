@@ -42,6 +42,7 @@ $offdelim
 f32_factorStorage(all_regi,"windon") $ (f32_factorStorage(all_regi,"windon") eq 0) = f32_factorStorage(all_regi,"wind");
 f32_factorStorage(all_regi,"windoff") = f32_factorStorage(all_regi,"windon");
 f32_factorStorage(all_regi,"windon")  = 1.35 * f32_factorStorage(all_regi,"windon");
+f32_factorStorage(all_regi,"spv")  = 1.75 * f32_factorStorage(all_regi,"spv");
 
 p32_factorStorage(all_regi,teVRE) = f32_factorStorage(all_regi,teVRE);
 

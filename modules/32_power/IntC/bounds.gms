@@ -71,4 +71,8 @@ loop(regi$(p32_factorStorage(regi,"csp") < 1),
 *** Fix capacity to 0 for elh2VRE now that the equation q32_elh2VREcapfromTestor pushes elh2, not anymore elh2VRE, and capital costs are 1
 vm_cap.fx(t,regi,"elh2VRE",rlf) = 0;
 
+*vm_cap.fx("2025","IND","tnrs","1") = 0.008;
+*vm_cap.fx("2035","IND","tnrs","1") = 0.015;
+*vm_cap.fx("2050","IND","tnrs","1") = 0.1;
+
 *** EOF ./modules/32_power/IntC/bounds.gms

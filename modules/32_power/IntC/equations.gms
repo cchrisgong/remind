@@ -126,10 +126,10 @@ q32_limitCapTeGrid(t,regi)$( t.val ge 2020 ) ..
     vm_cap(t,regi,"gridwindon",'1')    !! Technology is now parameterized to yield marginal costs of ~3.5$/MWh VRE electricity
     / p32_grid_factor(regi)            !! It is assumed that large regions require higher grid investment 
     =g=
-    vm_prodSe(t,regi,"pesol","seel","spv")                
-    + vm_prodSe(t,regi,"pesol","seel","csp")
-    + 1.5 * vm_prodSe(t,regi,"pewin","seel","windon")  !! wind has larger variations accross space, so adding grid is more important for wind (result of REMIX runs for ADVANCE project)
-    + 3   * vm_prodSe(t,regi,"pewin","seel","windoff") !! Getting offshore wind connected has even higher grid costs 
+    1.5 * vm_prodSe(t,regi,"pesol","seel","spv")                
+    +     vm_prodSe(t,regi,"pesol","seel","csp")
+    +     vm_prodSe(t,regi,"pewin","seel","windon")  !! wind has larger variations accross space, so adding grid is more important for wind (result of REMIX runs for ADVANCE project)
+    + 2 * vm_prodSe(t,regi,"pewin","seel","windoff") !! Getting offshore wind connected has even higher grid costs 
 ;
 
 ***---------------------------------------------------------------------------
