@@ -778,15 +778,14 @@ pm_cf(ttot,regi,"ngt")$(ttot.val ge 2040) = 0.6 * pm_cf(ttot,regi,"ngt");
 
 *UP* phasing down pc cf to "peak load" cf for IND
 $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
-*pm_cf(ttot,"IND","pc")$(ttot.val le 2020) = 1.00 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) =  1.5 * pm_cf("2025","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.3 * pm_cf("2030","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.1 * pm_cf("2035","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.05 * pm_cf("2040","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2045) = 0.85 * pm_cf("2045","IND","pc");
-*pm_cf(ttot,"IND","pc")$(ttot.val eq 2050) = 0.75 * pm_cf("2015","IND","pc");
-*pm_cf(ttot,"IND","pc")$(ttot.val eq 2055) = 0.60 * pm_cf("2015","IND","pc");
-*pm_cf(ttot,"IND","pc")$(ttot.val ge 2060) = 0.45 * pm_cf("2015","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 1.15 * pm_cf("2025","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.40 * pm_cf("2030","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.30 * pm_cf("2035","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.30 * pm_cf("2040","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2045) = 1.20 * pm_cf("2045","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2050) = 1.15 * pm_cf("2050","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2055) = 1.10 * pm_cf("2055","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val ge 2060) = 1.00 * pm_cf("2060","IND","pc");
 $endif.indPOpolicy
 
 *RP* set H2 turbines to the same CF values

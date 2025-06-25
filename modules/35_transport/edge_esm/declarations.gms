@@ -14,5 +14,6 @@ $IFTHEN.transpGDPscale "%cm_transpGDPscale%" == "on"
 q35_transGDPshare(ttot,all_regi)  "Calculating dampening factor to align edge-t non-energy transportation costs with historical GDP data"
 $ENDIF.transpGDPscale
 ;
-
+*** short-term solution to scale down FE_trasnport for India
+PARAMETER p35_downscaleTranspFE(ttot,all_regi)  "multiplicative parameter to downscale transport FE" ;
 *** EOF ./modules/35_transport/edge_esm/declarations.gms
