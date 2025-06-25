@@ -57,4 +57,21 @@ pm_cf(ttot,regi,"tdfosgat") = 0.65;
 pm_cf(ttot,regi,"tdbiogat") = 0.65;
 pm_cf(ttot,regi,"tdsyngat") = 0.65;
 
+*** short-term solution to scale down FE_trasnport for India
+p35_downscaleTranspFE(t,regi) = 1;
+p35_downscaleTranspFE("2015","IND") = 1/0.95;
+p35_downscaleTranspFE("2020","IND") = 1/0.90;
+p35_downscaleTranspFE("2025","IND") = 1/0.80;
+p35_downscaleTranspFE("2030","IND") = 1/0.75;
+p35_downscaleTranspFE("2035","IND") = 1/0.70;
+p35_downscaleTranspFE("2040","IND") = 1/0.67;
+p35_downscaleTranspFE("2045","IND") = 1/0.65;
+p35_downscaleTranspFE("2050","IND") = 1/0.63;
+p35_downscaleTranspFE("2055","IND") = 1/0.60;
+p35_downscaleTranspFE("2060","IND") = 1/0.55;
+p35_downscaleTranspFE("2070","IND") = 1/0.50;
+p35_downscaleTranspFE("2080","IND") = 1/0.45;
+p35_downscaleTranspFE("2090","IND") = 1/0.40;
+p35_downscaleTranspFE(t,"IND")$(t.val ge 2100) = 1/0.4;
+
 *** EOF ./modules/35_transport/edge_esm/datainput.gms

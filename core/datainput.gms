@@ -770,9 +770,8 @@ pm_cf(ttot,regi,"ngt")$(ttot.val ge 2040) = 0.6 * pm_cf(ttot,regi,"ngt");
 
 *UP* phasing down pc cf to "peak load" cf for IND
 $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
-*pm_cf(ttot,"IND","pc")$(ttot.val le 2020) = 1.00 * pm_cf("2015","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 0.90 * pm_cf("2025","IND","pc");
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.30 * pm_cf("2030","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 1.15 * pm_cf("2025","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.40 * pm_cf("2030","IND","pc");
 pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.30 * pm_cf("2035","IND","pc");
 pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.30 * pm_cf("2040","IND","pc");
 pm_cf(ttot,"IND","pc")$(ttot.val eq 2045) = 1.20 * pm_cf("2045","IND","pc");

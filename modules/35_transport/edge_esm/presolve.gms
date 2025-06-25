@@ -22,9 +22,11 @@ if( (ord(iteration) le 25 and ord(iteration) ge cm_startIter_EDGET and (mod(ord(
     p35_fe2es(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",teEs_dyn35)$( t.val gt 2005 ) 
     = p35_fe2es_aux(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",teEs_dyn35);
     !! up date model parameter with data after 2010
-    pm_fe2es(t,regi,teEs_dyn35)$(t.val gt 2010 AND t.val ge cm_startyear AND t.val le 2100)
-    = p35_fe2es_aux(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",teEs_dyn35);
-
+***    pm_fe2es(t,regi,teEs_dyn35)$(t.val gt 2010 AND t.val ge cm_startyear AND t.val le 2100)
+***    = p35_fe2es_aux(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",teEs_dyn35);
+*** short-term solution to scale down FE_trasnport for India
+	pm_fe2es(t,regi,teEs_dyn35)$(t.val gt 2010 AND t.val ge cm_startyear AND t.val le 2100)
+    = p35_downscaleTranspFE(t,regi) * p35_fe2es_aux(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",teEs_dyn35);
     Execute_Loadpoint 'p35_shFeCes' p35_shFeCes;
     pm_shFeCes(t,regi,entyFe,ppfen_dyn35,teEs_dyn35)$(p35_shFeCes(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",entyFe,ppfen_dyn35,teEs_dyn35) AND t.val gt 2010 AND t.val ge cm_startyear AND t.val le 2100) = p35_shFeCes(t,regi,"%cm_GDPpopScen%","%cm_demScen%","%cm_EDGEtr_scen%",entyFe,ppfen_dyn35,teEs_dyn35);
 );
