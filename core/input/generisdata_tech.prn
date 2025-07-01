@@ -110,7 +110,7 @@ flexibility        1.86         1.93        1.85       1.85
 *** other electricty
 +                 geohdr       geohe       hydro    tnrs 
 tech_stat            1
-inco0               3600        1200        2700    5600
+inco0               3600        1200        2000    4900
 constrTme            4           1           5        10 
 eta                 1.00        1.00        1.00    4.41
 omf                 0.04        0.06       0.025    0.03

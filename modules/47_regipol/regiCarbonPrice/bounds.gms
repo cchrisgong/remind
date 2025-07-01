@@ -170,14 +170,14 @@ if (cm_EnSecScen_limit gt 0,
 *UP: During 2020-2025, IND capacity addition is expected to be 15% p.a. for wind and 20% p.a. for spv.
 $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
 loop(regi$(sameAs(regi,"IND")),
-vm_deltaCap.up("2020",regi,"wind","1")= 0.098*vm_capCum.l("2015",regi,"wind");
+*vm_deltaCap.up("2020",regi,"wind","1")= 0.098*vm_capCum.l("2015",regi,"wind");
 *vm_deltaCap.up("2020",regi,"spv", "1")= 0.477*vm_capCum.l("2015",regi,"spv");
 
-vm_deltaCap.up("2025",regi,"wind","1")= 0.069*vm_capCum.l("2020",regi,"wind");
+*vm_deltaCap.up("2025",regi,"wind","1")= 0.069*vm_capCum.l("2020",regi,"wind");
 *vm_deltaCap.up("2025",regi,"spv", "1")= 0.280*vm_capCum.l("2020",regi,"spv");
 
-vm_deltaCap.up("2030",regi,"wind","1")= 0.149*vm_capCum.l("2025",regi,"wind");
-vm_deltaCap.up("2030",regi,"spv", "1")= 0.199*vm_capCum.l("2025",regi,"spv");
+*vm_deltaCap.up("2030",regi,"wind","1")= 0.149*vm_capCum.l("2025",regi,"wind");
+*vm_deltaCap.up("2030",regi,"spv", "1")= 0.199*vm_capCum.l("2025",regi,"spv");
 
 *vm_deltaCap.up("2035",regi,"wind","1")= 0.100*vm_capCum.l("2030",regi,"wind");
 *vm_deltaCap.up("2035",regi,"spv", "1")= 0.100*vm_capCum.l("2030",regi,"spv");
