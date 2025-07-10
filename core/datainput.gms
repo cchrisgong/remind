@@ -1642,6 +1642,8 @@ pm_fedemand("2045","IND","ue_chemicals") = pm_fedemand("2045","IND","ue_chemical
 pm_fedemand("2050","IND","ue_chemicals") = pm_fedemand("2050","IND","ue_chemicals") * 0.55;
 pm_fedemand("2055","IND","ue_chemicals") = pm_fedemand("2055","IND","ue_chemicals") * 0.55;
 pm_fedemand(tall,"IND","ue_chemicals")$(tall.val ge 2060) = pm_fedemand(tall,"IND","ue_chemicals") * 0.6;
+pm_fedemand(tall,"IND","ue_chemicals")$(tall.val ge 2070) = pm_fedemand(tall,"IND","ue_chemicals") * 0.5;
+pm_fedemand(tall,"IND","ue_chemicals")$(tall.val ge 2080) = pm_fedemand(tall,"IND","ue_chemicals") * 0.35;
 
 pm_fedemand("2010","IND","ue_otherInd") = pm_fedemand("2010","IND","ue_otherInd") * 0.1;
 pm_fedemand("2015","IND","ue_otherInd") = pm_fedemand("2015","IND","ue_otherInd") * 0.1;
