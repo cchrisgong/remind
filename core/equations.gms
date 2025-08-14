@@ -161,7 +161,7 @@ q_balSe(t,regi,enty2)$( entySe(enty2) AND (NOT (sameas(enty2,"seel"))) )..
   =e=
     sum(se2fe(enty2,enty3,te), vm_demSe(t,regi,enty2,enty3,te))
   + sum(se2se(enty2,enty3,te), vm_demSe(t,regi,enty2,enty3,te))
-  + sum(demSeOth2te(enty2,te), v_demSeOth(t,regi,enty2,te) ) !! *** RLDC removal
+  + sum(demSeOth2te(enty2,te), vm_demSeOth(t,regi,enty2,te) ) !! *** RLDC removal
   + vm_Xport(t,regi,enty2)
 ;
 
@@ -757,7 +757,7 @@ q_emiMacSector(t,regi,emiMacSector(enty))..
 
     ( v_macBase(t,regi,enty)
     * sum(emiMac2mac(enty,enty2),
-        1 - (pm_macSwitch(enty) * pm_macAbatLev(t,regi,enty2))
+        1 - (pm_macSwitch(t,regi,enty) * pm_macAbatLev(t,regi,enty2))
       )
     )$( NOT sameas(enty,"co2cement_process") )
 ***   cement process emissions are accounted for in the industry module
@@ -805,6 +805,8 @@ q_emiCdrAll(t,regi)..
           + vm_demFeSector_afterTax(t,regi,"segasyn","fegas","cdr","ETS")) !! FE syngas
       !! multiply with ccs share 
       * v_ccsShare(t,regi) 
+  !! 5. biochar CDR 
+  -  sum(emiBiochar2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !! negative value
 
   !! ---- gross industry CDR
   !! 1. gross industry CCS-CDR  (from burning biogenic or synfuel + capturing + storing the co2)
