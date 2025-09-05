@@ -26,6 +26,23 @@ vm_cap.lo(t,regi,"geohdr","1")$( (t.val gt 2025) AND sameas(regi, "OAS")) = p40_
 *vm_cap.up(t,regi,"coalchp","1")$(t.val gt 2025) = p40_TechBound(t,regi,"coalchp")*0.001;  !!max bound for Canada use the netzero calculator, check coal phase out module
 *vm_cap.lo(t,regi,"bioigcc","1")$(t.val gt 2025) = p40_TechBound(t,regi,"bioigcc")*0.001; !!regular bioenergy bound
 
+vm_cap.fx("2020","IND","windon","1") = 0.039;
+vm_cap.fx("2025","IND","windon","1") = 0.054;
+vm_cap.fx("2020","IND","spv","1") = 0.037;
+vm_cap.fx("2025","IND","spv","1") = 0.130;
+vm_cap.fx("2015","IND","pc","1") = 0.199;
+vm_cap.fx("2020","IND","pc","1") = 0.255;
+vm_cap.fx("2025","IND","pc","1") = 0.260;
+vm_cap.fx("2030","IND","pc","1") = 0.300;
+vm_cap.fx("2015","IND","tnrs","1") = 0.0058;
+vm_cap.fx("2020","IND","tnrs","1") = 0.0068;
+vm_cap.fx("2025","IND","tnrs","1") = 0.01;
+vm_cap.fx("2030","IND","tnrs","1") = 0.015;
+vm_capFac.fx("2010","IND","pc") = 0.69;
+vm_capFac.fx("2015","IND","pc") = 0.56;
+vm_capFac.fx("2020","IND","pc") = 0.54;
+vm_capFac.fx("2025","IND","pc") = 0.68;
+vm_capFac.fx("2030","IND","pc") = 0.67;
 
 display vm_cap.lo;
 

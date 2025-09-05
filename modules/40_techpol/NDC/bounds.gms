@@ -25,6 +25,25 @@ if(cm_H2targets eq 1,
   vm_cap.lo(t,regi,"elh2","1")$(t.val ge cm_startyear) = p40_TechBound(t,regi,"elh2")*0.001*pm_eta_conv(t,regi,"elh2");
 );
 
+vm_cap.fx("2020","IND","windon","1") = 0.039;
+vm_cap.fx("2025","IND","windon","1") = 0.054;
+vm_cap.fx("2020","IND","spv","1") = 0.037;
+vm_cap.fx("2025","IND","spv","1") = 0.130;
+vm_cap.fx("2015","IND","pc","1") = 0.199;
+vm_cap.fx("2020","IND","pc","1") = 0.255;
+vm_cap.fx("2025","IND","pc","1") = 0.260;
+vm_cap.fx("2030","IND","pc","1") = 0.300;
+vm_cap.fx("2015","IND","tnrs","1") = 0.0058;
+vm_cap.fx("2020","IND","tnrs","1") = 0.0068;
+vm_cap.fx("2025","IND","tnrs","1") = 0.01;
+vm_cap.fx("2030","IND","tnrs","1") = 0.015;
+vm_capFac.fx("2010","IND","pc") = 0.69;
+vm_capFac.fx("2015","IND","pc") = 0.56;
+vm_capFac.fx("2020","IND","pc") = 0.54;
+vm_capFac.fx("2025","IND","pc") = 0.68;
+vm_capFac.fx("2030","IND","pc") = 0.67;
+
+
 display vm_cap.lo;
 
 *** EOF ./modules/40_techpol/NDC/bounds.gms
