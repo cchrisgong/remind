@@ -777,7 +777,7 @@ pm_cf(ttot,regi,"ngt")$(ttot.val ge 2040) = 0.6 * pm_cf(ttot,regi,"ngt");
 
 *UP* phasing down pc cf to "peak load" cf for IND
 $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
-pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 1.15 * pm_cf("2025","IND","pc");
+pm_cf(ttot,"IND","pc")$(ttot.val eq 2025) = 1.35 * pm_cf("2025","IND","pc");
 pm_cf(ttot,"IND","pc")$(ttot.val eq 2030) = 1.40 * pm_cf("2030","IND","pc");
 pm_cf(ttot,"IND","pc")$(ttot.val eq 2035) = 1.30 * pm_cf("2035","IND","pc");
 pm_cf(ttot,"IND","pc")$(ttot.val eq 2040) = 1.30 * pm_cf("2040","IND","pc");
@@ -824,7 +824,7 @@ $ifthen.indPOpolicy "%cm_indCoalPOSpeed%" == "slow"
 *** Allow first slow then fast phase-out cap
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2020) = 0.001;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2025) = 0.001;
-pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2030) = 0.001;
+pm_regiEarlyRetiRate(t,"IND","pc")$(t.val le 2030) = 0.0015;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2035) = 0.0015;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2040) = 0.0025;
 pm_regiEarlyRetiRate(t,"IND","pc")$(t.val eq 2045) = 0.005;
@@ -1674,52 +1674,6 @@ $ifthen.scaleDemand not "%cm_scaleDemand%" == "off"
       pm_fedemand(t,all_regi,all_in) = pm_fedemand(t,all_regi,all_in) * ( pm_scaleDemand(tall,tall2,all_regi) + (1-pm_scaleDemand(tall,tall2,all_regi)) * min(1, max(0, tall2.val-t.val) / (tall2.val-tall.val)) );
   );
 $endif.scaleDemand
-
-**Factor to increase steel production
-*pm_fedemand("2020","IND","ue_steel_primary")   = pm_fedemand("2020","IND","ue_steel_primary")   * 1.3;
-*pm_fedemand("2020","IND","ue_steel_secondary") = pm_fedemand("2020","IND","ue_steel_secondary") * 1.3;
-
-*pm_fedemand("2025","IND","ue_steel_primary")   = pm_fedemand("2025","IND","ue_steel_primary")   * 1.3;
-*pm_fedemand("2025","IND","ue_steel_secondary") = pm_fedemand("2025","IND","ue_steel_secondary") * 1.3;
-
-*** scale India chemicals production and chemicals final energy demand trajectories
-*** scale chemicals production
-pm_fedemand("2010","IND","ue_chemicals") = pm_fedemand("2010","IND","ue_chemicals") * 0.5;
-pm_fedemand(tall,"IND","ue_chemicals")$((tall.val ge 2015) AND (tall.val le 2030)) = pm_fedemand(tall,"IND","ue_chemicals") * 0.4;
-pm_fedemand(tall,"IND","ue_chemicals")$((tall.val ge 2035) AND (tall.val le 2040)) = pm_fedemand(tall,"IND","ue_chemicals") * 0.45;
-pm_fedemand("2045","IND","ue_chemicals") = pm_fedemand("2045","IND","ue_chemicals") * 0.5;
-pm_fedemand(tall,"IND","ue_chemicals")$((tall.val ge 2050) AND (tall.val le 2055)) = pm_fedemand(tall,"IND","ue_chemicals") * 0.55;
-pm_fedemand(tall,"IND","ue_chemicals")$((tall.val ge 2060) AND (tall.val le 2065)) = pm_fedemand(tall,"IND","ue_chemicals") * 0.41;
-pm_fedemand(tall,"IND","ue_chemicals")$((tall.val ge 2070) AND (tall.val le 2085)) = pm_fedemand(tall,"IND","ue_chemicals") * 0.37;
-pm_fedemand(tall,"IND","ue_chemicals")$(tall.val ge 2090) = pm_fedemand(tall,"IND","ue_chemicals") * 0.37;
-
-*** scale chemicals FE demand (scale all energy carriers equally)
-pm_fedemand("2010","IND",in)$(ces_eff_target_dyn37("ue_chemicals",in)) = pm_fedemand("2010","IND",in) * 0.5;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_chemicals",in) AND (tall.val ge 2015) AND (tall.val le 2030)) = pm_fedemand(tall,"IND",in) * 0.4;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_chemicals",in) AND (tall.val ge 2035) AND (tall.val le 2040)) = pm_fedemand(tall,"IND",in) * 0.45;
-pm_fedemand("2045","IND",in)$(ces_eff_target_dyn37("ue_chemicals",in)) = pm_fedemand("2045","IND",in) * 0.5;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_chemicals",in) AND (tall.val ge 2050) AND (tall.val le 2055)) = pm_fedemand(tall,"IND",in) * 0.55;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_chemicals",in) AND (tall.val ge 2060) AND (tall.val le 2065)) = pm_fedemand(tall,"IND",in) * 0.41;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_chemicals",in) AND (tall.val ge 2070) AND (tall.val le 2085)) = pm_fedemand(tall,"IND",in) * 0.37;
-pm_fedemand(tall,"IND","ue_chemicals")$(tall.val ge 2090) = pm_fedemand(tall,"IND","ue_chemicals") * 0.37;
-
-*** scale India other industry production and final energy demand trajectories
-*** scale other ind production
-pm_fedemand("2010","IND","ue_otherInd") = pm_fedemand("2010","IND","ue_otherInd") * 0.1;
-pm_fedemand("2015","IND","ue_otherInd") = pm_fedemand("2015","IND","ue_otherInd") * 0.1;
-pm_fedemand("2020","IND","ue_otherInd") = pm_fedemand("2020","IND","ue_otherInd") * 0.12;
-pm_fedemand("2025","IND","ue_otherInd") = pm_fedemand("2025","IND","ue_otherInd") * 0.15;
-pm_fedemand("2030","IND","ue_otherInd") = pm_fedemand("2030","IND","ue_otherInd") * 0.2;
-pm_fedemand(tall,"IND","ue_otherInd")$((tall.val ge 2035) AND (tall.val le 2055)) = pm_fedemand(tall,"IND","ue_otherInd") * 0.3;
-pm_fedemand(tall,"IND","ue_otherInd")$(tall.val ge 2060) = pm_fedemand(tall,"IND","ue_otherInd") * 0.3;
-
-pm_fedemand("2010","IND",in)$(ces_eff_target_dyn37("ue_otherInd",in)) = pm_fedemand("2010","IND",in) * 0.1;
-pm_fedemand("2015","IND",in)$(ces_eff_target_dyn37("ue_otherInd",in)) = pm_fedemand("2015","IND",in) * 0.1;
-pm_fedemand("2020","IND",in)$(ces_eff_target_dyn37("ue_otherInd",in)) = pm_fedemand("2020","IND",in) * 0.12;
-pm_fedemand("2025","IND",in)$(ces_eff_target_dyn37("ue_otherInd",in)) = pm_fedemand("2025","IND",in) * 0.15;
-pm_fedemand("2030","IND",in)$(ces_eff_target_dyn37("ue_otherInd",in)) = pm_fedemand("2030","IND",in) * 0.2;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_otherInd",in) AND (tall.val ge 2035) AND (tall.val le 2055)) = pm_fedemand(tall,"IND",in) * 0.3;
-pm_fedemand(tall,"IND",in)$(ces_eff_target_dyn37("ue_otherInd",in) AND (tall.val ge 2060)) = pm_fedemand(tall,"IND",in) * 0.3;
 
 
 $ifthen.cm_rcp_scen_build not "%cm_rcp_scen_build%" == "none"
